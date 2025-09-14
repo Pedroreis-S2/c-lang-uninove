@@ -1,0 +1,10 @@
+FROM debian:bullseye
+
+RUN apt-get update && \
+    apt-get install -y gcc make gdb vim python3 python3-pip && \
+    apt-get clean
+
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+WORKDIR /app
