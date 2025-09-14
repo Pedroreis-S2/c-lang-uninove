@@ -1,0 +1,11 @@
+{
+  "name": "C Dev Container",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "c-dev",
+  "workspaceFolder": "/app",
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "postStartCommand": "bash",
+  "remoteUser": "root"
+}
