@@ -3,9 +3,8 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "c-dev",
   "runArgs": [
-    "exec",
-    "-it",
-    "c-lang-c-dev-1",
+    "run",
+    "c-lang",
     "bash"
   ],
   "customizations": {
