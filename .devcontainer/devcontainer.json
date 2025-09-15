@@ -1,0 +1,17 @@
+{
+  "name": "C-lang Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "c-dev",
+  "runArgs": [
+    "exec",
+    "-it",
+    "c-lang-c-dev-1",
+    "bash"
+  ],
+  "customizations": {
+          "vscode": {
+              "settings": {},
+              "extensions": ["github.copilot","eamodio.gitlens","ms-python.python"]
+              }
+        }
+}
