@@ -10,77 +10,77 @@ void solicita_informacoes(char mensagem[], char formato[], void *variavel) {
 
 void main() {
     char nome[100];
-    printf("Atividade 1 - Nome usuario");
+    printf("Atividade 1 - Nome usuario\n");
     solicita_informacoes("Digite seu nome: ", "%s", nome);
     imprime_nome(nome);
     espaco();
 
-    printf("atividade 2 - Números");
+    printf("atividade 2 - Números\n");
     float num_1, num_2, num_3;
     solicita_informacoes("Digite um numero inteiro: ", "%f", &num_1);
     solicita_informacoes("Digite outro numero inteiro: ", "%f", &num_2);
     imprime_dois_numeros(num_1, num_2);
     espaco();
 
-    printf("atividade 3 - Média");
+    printf("atividade 3 - Média\n");
     solicita_informacoes("Digite um numero float: ", "%f", &num_1);
     solicita_informacoes("Digite outro numero float: ", "%f", &num_2);
     solicita_informacoes("Digite mais um numero float: ", "%f", &num_3);
     imprime_media_numeros(num_1, num_2, num_3);
     espaco();
 
-    printf("atividade 4 - numeo inteiro");
+    printf("atividade 4 - numero inteiro\n");
     solicita_numero_inteiro();
     espaco();
 
-    printf("atividade 5 - dois numeros float");
+    printf("atividade 5 - dois numeros float\n");
     solicita_dois_numeros_float();
     espaco();
 
-    printf("atividade 6 - antecessor");
+    printf("atividade 6 - antecessor\n");
     solicita_informacoes("Digite um número inteiro para descobrir seu antecessor: ", "%i", &num_1);
     imprime_antecessor(num_1);
     espaco();
 
-    printf("atividade 7 - um quarto");
+    printf("atividade 7 - um quarto\n");
     solicita_informacoes("Digite um número inteiro para descobrir um quarto dele: ", "%i", &num_1);
     imprime_fracao_um_quarto(num_1);
     espaco();
 
-    printf("atividade 8 - valor ao quadrado");
+    printf("atividade 8 - valor ao quadrado\n");
     solicita_informacoes("Digite um número inteiro para descobrir seu valor ao quadrado: ", "%i", &num_1);
     calcula_valor_quadrado(num_1);
     espaco();
 
-    printf("atividade 9 - reajuste poupanca");
+    printf("atividade 9 - reajuste poupanca\n");
     solicita_informacoes("Digite o valor da sua poupança: ", "%f", &num_1);
     reajuste_2_porcento(num_1);
     espaco();
 
-    printf("atividade 10 - area e perimetro retangulo");
+    printf("atividade 10 - area e perimetro retangulo\n");
     solicita_informacoes("Digite a largura de um retângulo: ", "%f", &num_1);
     solicita_informacoes("Digite a altura de um retângulo: ", "%f", &num_2);
     imprime_area_perimetro_retangulo(num_1, num_2);
     espaco();
 
-    printf("atividade 11 - valor com desconto");
+    printf("atividade 11 - valor com desconto\n");
     solicita_informacoes("Digite o valor do produto", "%f", &num_1);
     solicita_informacoes("Digite o percentual de desconto: ", "%d", &num_2);
     imprime_valor_com_desconto(num_1, num_2);
     espaco();
 
-    printf("atividade 12 - reajuste salario");
+    printf("atividade 12 - reajuste salario\n");
     solicita_informacoes("Digite o salario de um funcionario: ", "%f", &num_1);
     solicita_informacoes("Digite o percentual de reajuste: ", "%d", &num_2);
     reajusta_valores_salario(num_1, num_2);
     espaco();
 
-    printf("atividade 13 - celsius para fahrenheit");
+    printf("atividade 13 - celsius para fahrenheit\n");
     solicita_informacoes("Digite a temperatura em graus Celsius para converter em Fahrenheit: ", "%f", &num_1);
     calcula_graus_fahrenheit(num_1);
     espaco();
 
-    printf("atividade 14 - litros gasolina");
+    printf("atividade 14 - litros gasolina\n");
     float autonomia, tempo_horas, velocidade_media;
 
     solicita_informacoes("Digite a autonomia do veículo (km/l): ", "%f", &autonomia);
