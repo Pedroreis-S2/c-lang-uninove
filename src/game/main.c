@@ -7,7 +7,7 @@ void main() {
     do {
         printf("🎲 Deseja jogar uma rodada? (s/n): ");
         char resposta;
-        scanf(" %c", &resposta);  // Espaço antes do %c para ignorar whitespace
+        scanf(" %c", &resposta);
         
         bool nao = resposta == 'n' || resposta == 'N';
         bool sim = resposta == 's' || resposta == 'S';
@@ -16,7 +16,7 @@ void main() {
             printf("Obrigado por jogar! Seu saldo final é: $%.2f\n", saldo);
             break;
         }
-        else if (!sim) {  // Mudei de sim == false para !sim
+        else if (!sim) {
             printf("Resposta inválida. Por favor, digite 's' para sim ou 'n' para não.\n");
             continue;
         }
