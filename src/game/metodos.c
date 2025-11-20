@@ -81,7 +81,7 @@ void animar_roleta_embaralhando(listaRolo *lista_original, int duracao_ms) {
     int frames = duracao_ms / 150; // Aproximadamente 150ms por frame
     
     printf("🎰 Preparando para girar a roleta...\n");
-    Sleep(1000);
+    Sleep(150);
     
     // Animação de embaralhamento
     for (int frame = 0; frame < frames; frame++) {
