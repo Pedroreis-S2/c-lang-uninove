@@ -1,10 +1,17 @@
 FROM debian:bullseye
 
 RUN apt-get update && \
-    apt-get install -y gcc git make gdb vim python3 python3-pip && \
-    apt-get clean
-
-COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+    apt-get install -y \
+    gcc \
+    build-essential \
+    make \
+    gdb \
+    libc6-dev \
+    ncurses-dev \
+    git \
+    vim \
+    python3 \
+    python3-pip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
