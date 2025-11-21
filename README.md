@@ -109,7 +109,7 @@ O projeto **Slot Machine** é um caça-níqueis desenvolvido em C que inclui:
 
 - **Disciplina**: Algoritmos e Programação Linear
 - **Semestre**: 2025/2
-- **Instituição**: [Nome da Faculdade]
+- **Instituição**: Uninove
 
 ---
 
