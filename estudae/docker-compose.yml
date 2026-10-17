@@ -1,0 +1,46 @@
+services:
+  # --------------------------------------------------------------------------
+  # dev - DESENVOLVIMENTO (Codespaces / dev container)
+  # Dia a dia NAO precisa rebuildar imagem: o codigo e montado por volume e o
+  # `flutter run` tem hot reload.
+  #   docker compose up -d dev
+  #   docker compose exec dev flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000
+  #   -> http://localhost:5000
+  # Testes:
+  #   docker compose exec dev flutter test
+  # --------------------------------------------------------------------------
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: estudae-dev:latest
+    container_name: estudae-dev
+    working_dir: /workspaces/estudae
+    volumes:
+      - .:/workspaces/estudae
+      # Pacotes do pub ficam num volume: `flutter pub get` fica instantaneo
+      # depois da primeira vez, mesmo recriando o container.
+      - pub-cache:/root/.pub-cache
+    command: sleep infinity
+    stdin_open: true
+    tty: true
+    ports:
+      - "5000:5000"
+
+  # --------------------------------------------------------------------------
+  # web - PRODUCAO / APRESENTACAO
+  # Build web do Flutter servido por nginx.
+  #   docker compose up --build web   ->  http://localhost:8080
+  # --------------------------------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: estudae-web:latest
+    container_name: estudae-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  pub-cache:

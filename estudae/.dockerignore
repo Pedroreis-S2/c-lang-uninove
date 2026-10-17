@@ -1,0 +1,11 @@
+.git
+.dart_tool
+.idea
+.vscode
+.devcontainer
+build
+*.iml
+.logs
+Dockerfile*
+docker-compose.yml
+README.md
