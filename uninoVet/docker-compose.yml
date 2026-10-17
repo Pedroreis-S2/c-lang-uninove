@@ -27,3 +27,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+
+  web:
+    build: ./web
+    container_name: uninovet-web
+    environment:
+      DB_HOST: db
+      DB_NAME: uninovet
+      DB_USER: uninovet
+      DB_PASSWORD: uninovet
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
