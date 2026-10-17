@@ -1,0 +1,29 @@
+# UninoVet - sobe tudo com um comando: docker compose up
+#
+#   db     -> MySQL com as tabelas e os dados ja criados (db/init.sql)
+#   web    -> painel do veterinario em Java (JSP/Servlet) + API dos agendamentos
+#   mobile -> aplicativo Flutter (foco do projeto)
+#
+# Portas:
+#   web    -> http://localhost:8080
+#   mobile -> http://localhost:5000
+#   db     -> localhost:3306
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: uninovet-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: uninovet
+      MYSQL_USER: uninovet
+      MYSQL_PASSWORD: uninovet
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
