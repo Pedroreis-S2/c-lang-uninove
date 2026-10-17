@@ -1,0 +1,10 @@
+# Imagem de desenvolvimento do app Flutter: ja traz o SDK e os artefatos web,
+# entao "docker compose up" so precisa rodar o app, sem baixar o SDK toda vez.
+ARG FLUTTER_VERSION=3.24.5
+FROM ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}
+
+RUN flutter config --no-analytics \
+ && flutter precache --web
+
+WORKDIR /app
+CMD ["sleep", "infinity"]

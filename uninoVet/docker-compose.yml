@@ -41,3 +41,22 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  mobile:
+    build:
+      context: ./mobile
+      dockerfile: Dockerfile.dev
+    image: uninovet-mobile-dev:latest
+    container_name: uninovet-mobile
+    working_dir: /app
+    volumes:
+      - ./mobile:/app
+      - mobile-pub-cache:/root/.pub-cache
+    command: sh -c "flutter pub get && flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - web
+
+volumes:
+  mobile-pub-cache:
