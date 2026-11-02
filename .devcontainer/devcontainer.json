@@ -1,0 +1,25 @@
+{
+  "name": "uni9 (estudae + uninoVet)",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+  "forwardPorts": [3000, 5000, 8080],
+  "portsAttributes": {
+    "3000": { "label": "UninoVet (app / + painel /admin + /api)", "onAutoForward": "openPreview" },
+    "5000": { "label": "Estudae (Flutter)", "onAutoForward": "notify" },
+    "8080": { "label": "UninoVet painel (direto)", "onAutoForward": "silent" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Dart-Code.dart-code",
+        "Dart-Code.flutter",
+        "anthropic.claude-code"
+      ]
+    }
+  },
+  "postCreateCommand": "npm install -g @anthropic-ai/claude-code || true",
+  "postAttachCommand": "echo 'Rode:  make estudae   OU   make uninovet   (um por vez). Depois abra as portas na aba PORTS.'"
+}

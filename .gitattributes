@@ -9,3 +9,9 @@
 *.otf  binary
 *.ttf  binary
 *.wasm binary
+
+# Arquivos que rodam no Linux (Codespace): sempre LF (CRLF quebraria o make/sh).
+Makefile    text eol=lf
+*.sh        text eol=lf
+*.conf      text eol=lf
+Dockerfile* text eol=lf

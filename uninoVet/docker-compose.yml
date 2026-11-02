@@ -3,11 +3,10 @@
 #   db     -> MySQL com as tabelas e os dados ja criados (db/init.sql)
 #   web    -> painel do veterinario em Java (JSP/Servlet) + API dos agendamentos
 #   mobile -> aplicativo Flutter (foco do projeto)
+#   proxy  -> uma porta so que junta tudo (app em /, API em /api, painel em /admin)
 #
-# Portas:
-#   web    -> http://localhost:8080
-#   mobile -> http://localhost:5000
-#   db     -> localhost:3306
+# Use http://localhost:3000 (entrada unica; funciona igual no Codespace).
+# Portas diretas, se quiser: painel 8080, app 5000, banco 3306.
 
 services:
   db:
@@ -57,6 +56,17 @@ services:
       - "5000:5000"
     depends_on:
       - web
+
+  proxy:
+    image: nginx:1.27-alpine
+    container_name: uninovet-proxy
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "3000:80"
+    depends_on:
+      - web
+      - mobile
 
 volumes:
   mobile-pub-cache:
