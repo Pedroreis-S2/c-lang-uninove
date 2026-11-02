@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Aparencia do aplicativo. Troque a cor-base para mudar a identidade visual;
-// o restante da paleta (claro e escuro) e gerado a partir dela.
 class Tema {
   static const Color corBase = Color(0xFF00796B);
   static const double raio = 16;

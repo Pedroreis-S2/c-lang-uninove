@@ -9,11 +9,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # SQLite: no Android/iOS usa o sqflite; na web usa a versao ffi web.
+  sqflite: ^2.3.3
+  sqflite_common_ffi_web: ^0.4.5
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  # Permite abrir o banco nos testes (rodam na VM, sem dispositivo).
+  sqflite_common_ffi: ^2.3.3
 
 flutter:
   uses-material-design: true

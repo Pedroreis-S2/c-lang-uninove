@@ -8,6 +8,11 @@ App Flutter (web) da disciplina Computação Móvel. Cada aula do site vira um a
 | 8 | `aula08_estados.dart` | `TelaEstudos` (Plano de estudos: contador, nome, modo foco), `TelaResumo` |
 | 9 | `aula09_formulario.dart` | `TelaUltimaSessao`, `TelaFormulario` (tema, duração, observação; validação e retorno) |
 | 10 | `aula10_lista.dart` | `TelaLista` (Minhas sessões: cadastrar, editar, excluir com confirmação) |
+| 11-12 | `aula11_sqlite.dart` + `dados/` | `TelaSessoesSalvas` (SQLite: cadastro, consulta, edição e exclusão; os dados ficam salvos no `sessoes.db` e sobrevivem a fechar/reabrir) |
+
+## SQLite (Aulas 11 e 12)
+
+A tela "Sessões salvas" grava no SQLite via `sqflite`. No Android usa o banco nativo; na web usa a versão em WebAssembly (`sqflite_common_ffi_web`), escolhida em `lib/dados/config_banco.dart`. Os arquivos do banco no web (`web/sqlite3.wasm` e `web/sqflite_sw.js`) vêm do comando `dart run sqflite_common_ffi_web:setup` e já estão no repositório.
 
 ## Trocar de domínio (ex.: virar comércio)
 

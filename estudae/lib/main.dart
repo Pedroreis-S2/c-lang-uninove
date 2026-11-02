@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'aulas/aula07_telas.dart';
 import 'config/strings.dart';
 import 'config/tema.dart';
+import 'dados/config_banco.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  configurarBanco();
   runApp(const EstudaeApp());
 }
 

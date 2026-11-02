@@ -8,3 +8,4 @@
 *.jar  binary
 *.otf  binary
 *.ttf  binary
+*.wasm binary

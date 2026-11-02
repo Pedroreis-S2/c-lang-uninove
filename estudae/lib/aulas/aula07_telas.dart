@@ -6,6 +6,7 @@ import '../widgets/conteudo.dart';
 import 'aula08_estados.dart';
 import 'aula09_formulario.dart';
 import 'aula10_lista.dart';
+import 'aula11_sqlite.dart';
 
 // Aula 7: tres interfaces com StatelessWidget (TelaInicio, TelaDisciplina e
 // AvisoModal) e navegacao entre elas. Tambem e o menu para as outras aulas.
@@ -26,6 +27,10 @@ class TelaInicio extends StatelessWidget {
 
   Widget _paginaLista(BuildContext context) {
     return const TelaLista();
+  }
+
+  Widget _paginaSalvas(BuildContext context) {
+    return const TelaSessoesSalvas();
   }
 
   void _abrirAviso(BuildContext context) {
@@ -131,6 +136,13 @@ class TelaInicio extends StatelessWidget {
               titulo: Textos.tituloLista,
               subtitulo: Textos.aula10Nome,
               destino: _paginaLista,
+            ),
+            const SizedBox(height: 8),
+            _ItemMenu(
+              icone: Icons.save_outlined,
+              titulo: Textos.tituloSalvas,
+              subtitulo: Textos.aula11Nome,
+              destino: _paginaSalvas,
             ),
           ],
         ),

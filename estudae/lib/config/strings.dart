@@ -89,4 +89,15 @@ class Textos {
   static String contagemLista(int quantidade) =>
       'Sessões nesta execução: $quantidade';
   static String textoExcluir(String tema) => 'Remover "$tema" da lista?';
+
+  // ---- Aula 11/12: SQLite ---------------------------------------------------
+  static const String aula11Nome = 'Sessões salvas (SQLite)';
+  static const String tituloSalvas = 'Sessões salvas';
+  static const String salvasVazioTitulo = 'Nenhuma sessão salva';
+  static const String salvasVazioTexto =
+      'Cadastre uma sessão; ela continua salva mesmo fechando o app.';
+  static const String erroBanco = 'Não foi possível abrir o banco.';
+  static const String tentarNovamente = 'Tentar de novo';
+
+  static String contagemSalvas(int quantidade) => 'Sessões salvas: $quantidade';
 }
