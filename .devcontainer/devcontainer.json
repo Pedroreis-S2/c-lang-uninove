@@ -1,8 +1,11 @@
 {
   "name": "uni9 (estudae + uninoVet)",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "dockerDashComposeVersion": "v2"
+    },
     "ghcr.io/devcontainers/features/node:1": {}
   },
   "forwardPorts": [3000, 5000, 8080],
@@ -21,5 +24,6 @@
     }
   },
   "postCreateCommand": "npm install -g @anthropic-ai/claude-code || true",
+  "postStartCommand": "make check-docker",
   "postAttachCommand": "echo 'Rode:  make estudae   OU   make uninovet   (um por vez). Depois abra as portas na aba PORTS.'"
 }

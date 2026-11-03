@@ -18,6 +18,39 @@ make uninovet    # UninoVet: tudo na porta 3000 (/ app, /admin painel, /api)
 make down        # desliga os dois
 ```
 
+### Preparar o Docker no Codespace
+
+O devcontainer instala o **Docker CLI, o daemon (Docker-in-Docker) e o
+Compose v2** durante a criação do ambiente. A feature inicia o daemon junto
+com o container; `make check-docker` verifica CLI, Compose e acesso ao daemon
+a cada início do Codespace e antes dos alvos que sobem/desligam os projetos.
+
+A imagem base está fixada em **Ubuntu 24.04**, compatível com o Moby usado
+pela feature. Não troque pela tag móvel `base:ubuntu`: ela pode apontar para
+uma distribuição ainda sem os pacotes necessários. Nesse caso, o build
+falha e o Codespace abre um container de recuperação sem o daemon Docker.
+
+Se o Codespace já existia antes dessa configuração, execute **Codespaces:
+Rebuild Container** pela paleta de comandos do VS Code. Apenas reabrir o
+terminal ou instalar o CLI não instala/inicia o daemon. O erro
+`/var/run/docker.sock: no such file or directory` indica que o socket do
+daemon não está disponível.
+
+Depois da reconstrução, valide e inicie o Estudae:
+
+```sh
+make check-docker
+make estudae
+docker compose -f estudae/docker-compose.yml exec dev flutter test
+curl --fail http://localhost:5000
+```
+
+Na primeira execução, aguarde o download/build da imagem e a compilação do
+Flutter antes de testar a porta 5000. `make estudae` inicia o Flutter em
+segundo plano; o retorno do alvo não significa que a página já está pronta.
+Se a verificação do Docker ou a parada de um projeto falhar, o Makefile
+interrompe a execução sem tentar subir o próximo projeto.
+
 No Codespace, depois de rodar o alvo, abra a porta pela aba **PORTS**.
 
 - **Estudae** → porta **5000**.
