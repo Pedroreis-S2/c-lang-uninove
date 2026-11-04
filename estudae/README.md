@@ -27,10 +27,33 @@ As telas não têm texto, nome de campo nem limite escritos no código. Tudo vem
 
 ```
 docker compose up -d dev
-docker compose exec dev flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000
+docker compose logs -f dev
 ```
 
 Abra http://localhost:5000. Testes: `docker compose exec dev flutter test`.
 Produção (nginx): `docker compose up --build web` → http://localhost:8080.
+
+O container inicia o Flutter e observa `lib/`, `web/`, `assets/` e `pubspec`
+por polling, inclusive em volumes do Codespace/Windows. Salvar um arquivo
+dispara a recompilação e a página aberta recarrega automaticamente depois do
+sucesso, sem botão, comando interativo ou extensão de depuração. Alterações
+no `pubspec.yaml`/`pubspec.lock` também executam `flutter pub get`.
+
+No Flutter 3.24 web isso é **hot restart**, não hot reload com preservação de
+estado: o estado em memória é reiniciado; o SQLite continua persistido.
+Erros de compilação aparecem nos logs e não recarregam a página; corrija e
+salve novamente. O polling do navegador não é ativado no build de produção.
+
+Se o container já estava rodando com a configuração antiga, execute uma vez:
+`docker compose up -d --build --force-recreate dev`. Depois basta salvar os
+arquivos. Não execute outro `flutter run` na mesma porta. Na raiz do
+repositório, `make estudae` usa esse mesmo fluxo automático.
+
+Testes da recarga automática (o segundo comando roda no host com Node):
+
+```sh
+docker compose exec -T dev python3 -B -m unittest discover -s scripts -p 'test_*.py'
+node --test scripts/test_bootstrap.cjs
+```
 
 Os dados da lista ficam só em memória: reiniciar o app apaga tudo (é o que a Aula 10 pede).

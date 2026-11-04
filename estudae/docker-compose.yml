@@ -2,9 +2,8 @@ services:
   # --------------------------------------------------------------------------
   # dev - DESENVOLVIMENTO (Codespaces / dev container)
   # Dia a dia NAO precisa rebuildar imagem: o codigo e montado por volume e o
-  # `flutter run` tem hot reload.
+  # scripts/dev.sh observa os arquivos e atualiza o navegador automaticamente.
   #   docker compose up -d dev
-  #   docker compose exec dev flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000
   #   -> http://localhost:5000
   # Testes:
   #   docker compose exec dev flutter test
@@ -21,9 +20,8 @@ services:
       # Pacotes do pub ficam num volume: `flutter pub get` fica instantaneo
       # depois da primeira vez, mesmo recriando o container.
       - pub-cache:/root/.pub-cache
-    command: sleep infinity
-    stdin_open: true
-    tty: true
+    command: sh scripts/dev.sh
+    init: true
     ports:
       - "5000:5000"
 

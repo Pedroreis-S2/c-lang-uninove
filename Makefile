@@ -13,8 +13,7 @@ help:
 	@echo "make down      -> desliga os dois"
 
 estudae: down
-	cd estudae && docker compose up -d dev
-	cd estudae && docker compose exec -d dev sh -c "flutter pub get && flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000"
+	cd estudae && docker compose up dev
 	@echo ">> Estudae subindo. Abra a porta 5000 (aguarde o Flutter compilar)."
 
 uninovet: down

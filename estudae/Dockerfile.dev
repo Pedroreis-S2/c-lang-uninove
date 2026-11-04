@@ -6,8 +6,12 @@
 ARG FLUTTER_VERSION=3.24.5
 FROM ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}
 
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3 \
+ && rm -rf /var/lib/apt/lists/*
+
 RUN flutter config --no-analytics \
  && flutter precache --web
 
 WORKDIR /workspaces/estudae
-CMD ["sleep", "infinity"]
+CMD ["sh", "scripts/dev.sh"]

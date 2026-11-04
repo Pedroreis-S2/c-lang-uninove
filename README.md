@@ -53,6 +53,12 @@ interrompe a execução sem tentar subir o próximo projeto.
 
 No Codespace, depois de rodar o alvo, abra a porta pela aba **PORTS**.
 
+No Estudae, o próprio container observa os arquivos e recompila ao salvar;
+a página aberta recarrega automaticamente após uma compilação bem-sucedida.
+Não é necessário botão de hot reload nem executar `flutter run` à parte.
+O Flutter web 3.24 usa hot restart, reiniciando o estado em memória.
+Veja o progresso/erros com `docker compose -f estudae/docker-compose.yml logs -f dev`.
+
 - **Estudae** → porta **5000**.
 - **UninoVet** → porta **3000** (uma só): `/` é o app, `/admin` é o painel e `/api` é a API.
 

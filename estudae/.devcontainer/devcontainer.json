@@ -2,6 +2,7 @@
   "name": "estudae (Flutter web)",
   "dockerComposeFile": ["../docker-compose.yml"],
   "service": "dev",
+  "overrideCommand": false,
   "runServices": ["dev"],
   "workspaceFolder": "/workspaces/estudae",
   "shutdownAction": "none",

@@ -30,6 +30,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/web/.dev-reload.json*
+__pycache__/
 
 # Symbolication related
 app.*.symbols
