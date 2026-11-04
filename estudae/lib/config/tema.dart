@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Tema {
-  static const Color corBase = Color(0xFF00796B);
+  static const Color corBase = Color(0xFF000000);
   static const double raio = 16;
   static const double espaco = 16;
   static const double larguraMaxima = 640;
