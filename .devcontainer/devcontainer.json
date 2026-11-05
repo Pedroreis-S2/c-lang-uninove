@@ -8,11 +8,10 @@
     },
     "ghcr.io/devcontainers/features/node:1": {}
   },
-  "forwardPorts": [3000, 5000, 8080],
+  "forwardPorts": [8080, 5000],
   "portsAttributes": {
-    "3000": { "label": "UninoVet (app / + painel /admin + /api)", "onAutoForward": "openPreview" },
-    "5000": { "label": "Estudae (Flutter)", "onAutoForward": "notify" },
-    "8080": { "label": "UninoVet painel (direto)", "onAutoForward": "silent" }
+    "8080": { "label": "UninoVet - painel Java (admin)", "onAutoForward": "openBrowser" },
+    "5000": { "label": "App Flutter (Estudae ou UninoVet)", "onAutoForward": "notify" }
   },
   "customizations": {
     "vscode": {
@@ -24,6 +23,5 @@
     }
   },
   "postCreateCommand": "npm install -g @anthropic-ai/claude-code || true",
-  "postStartCommand": "make check-docker",
-  "postAttachCommand": "echo 'Rode:  make estudae   OU   make uninovet   (um por vez). Depois abra as portas na aba PORTS.'"
+  "postAttachCommand": "echo 'Rode:  make uninovet   OU   make estudae   (um por vez). Abra as portas na aba PORTS.'"
 }

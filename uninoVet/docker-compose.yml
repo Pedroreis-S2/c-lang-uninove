@@ -3,10 +3,11 @@
 #   db     -> MySQL com as tabelas e os dados ja criados (db/init.sql)
 #   web    -> painel do veterinario em Java (JSP/Servlet) + API dos agendamentos
 #   mobile -> aplicativo Flutter (foco do projeto)
-#   proxy  -> uma porta so que junta tudo (app em /, API em /api, painel em /admin)
+#   proxy  -> (opcional, --profile proxy) junta tudo numa porta so
 #
-# Use http://localhost:3000 (entrada unica; funciona igual no Codespace).
-# Portas diretas, se quiser: painel 8080, app 5000, banco 3306.
+# Sao duas aplicacoes separadas: painel Java em http://localhost:8080 e
+# aplicativo Flutter em http://localhost:5000 (banco em 3306).
+# O Flutter descobre o Java pela variavel API_BASE (o Makefile preenche).
 
 services:
   db:
@@ -35,6 +36,8 @@ services:
       DB_NAME: uninovet
       DB_USER: uninovet
       DB_PASSWORD: uninovet
+      # Endereco do app Flutter (o painel mostra um link para ele).
+      APP_URL: ${APP_URL:-http://localhost:5000}
     ports:
       - "8080:8080"
     depends_on:
@@ -51,13 +54,18 @@ services:
     volumes:
       - ./mobile:/app
       - mobile-pub-cache:/root/.pub-cache
-    command: sh -c "flutter pub get && flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000"
+    environment:
+      # Endereco do Java, passado por argumento ao Flutter (--dart-define).
+      API_BASE: ${API_BASE:-}
+    command: sh -c "flutter pub get && flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000 --dart-define=API_BASE=$${API_BASE}"
     ports:
       - "5000:5000"
     depends_on:
       - web
 
+  # Opcional: junta tudo numa porta so. Subir com: docker compose --profile proxy up
   proxy:
+    profiles: ["proxy"]
     image: nginx:1.27-alpine
     container_name: uninovet-proxy
     volumes:

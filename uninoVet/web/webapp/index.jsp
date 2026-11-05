@@ -24,6 +24,14 @@
       }
 %>
     </ul>
+<%
+      String urlApp = System.getenv("APP_URL");
+      if (urlApp != null && !urlApp.isEmpty()) {
+%>
+    <p><a class="botao" href="<%= urlApp %>" target="_blank">Abrir o aplicativo</a></p>
+<%
+      }
+%>
   </main>
 </body>
 </html>
