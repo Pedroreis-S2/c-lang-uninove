@@ -70,3 +70,49 @@ td.acoes { display: flex; gap: 12px; align-items: center; }
 .formulario label { display: grid; gap: 4px; font-size: 13px; color: #555; }
 .formulario input { padding: 8px; border: 1px solid var(--borda); border-radius: 6px; }
 .formulario .acoes { display: flex; gap: 12px; align-items: center; }
+
+/* --- Painel da clinica --- */
+header .barra { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+header .sub { font-weight: normal; font-size: 14px; opacity: .85; margin-left: 8px; }
+header .sair { display: flex; align-items: center; gap: 12px; font-size: 13px; margin: 0; }
+header nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+header nav a { padding: 6px 12px; border-radius: 6px; text-decoration: none; background: rgba(255,255,255,.15); font-size: 14px; }
+header nav a:hover { background: rgba(255,255,255,.3); }
+button.claro { background: rgba(255,255,255,.25); }
+
+main { max-width: 1100px; }
+h3 { margin-top: 32px; }
+small { color: #666; }
+.dica { color: #555; font-size: 14px; }
+
+.aviso { padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+.aviso.ok { background: #e8f5e9; color: #1b5e20; }
+.aviso.erro { background: #ffebee; color: #b71c1c; }
+
+.resumo { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+.numero { background: #fff; border: 1px solid var(--borda); border-radius: 10px; padding: 14px 20px; min-width: 180px; text-decoration: none; color: #222; display: grid; }
+.numero strong { font-size: 30px; color: var(--cor); }
+.numero.destaque { border-color: var(--cor); }
+
+.status { padding: 2px 8px; border-radius: 10px; font-size: 12px; background: #eceff1; }
+.status.SOLICITADA { background: #fff3e0; color: #e65100; }
+.status.AGENDADA { background: #e3f2fd; color: #0d47a1; }
+.status.CONCLUIDA { background: #e8f5e9; color: #1b5e20; }
+.status.RECUSADA, .status.CANCELADA { background: #ffebee; color: #b71c1c; }
+
+form.linha { display: inline-flex; gap: 6px; align-items: center; margin: 2px 0; }
+form.linha input, form.linha select { padding: 4px 6px; border: 1px solid var(--borda); border-radius: 6px; font-size: 13px; }
+.filtro { display: flex; gap: 12px; align-items: end; margin: 12px 0; flex-wrap: wrap; }
+.filtro label { display: grid; gap: 4px; font-size: 13px; color: #555; }
+.filtro input, .filtro select { padding: 8px; border: 1px solid var(--borda); border-radius: 6px; }
+.formulario.largo { max-width: 520px; }
+.formulario select { padding: 8px; border: 1px solid var(--borda); border-radius: 6px; }
+
+body.entrada { display: grid; place-items: center; min-height: 100vh; }
+.cartao-login { background: #fff; border: 1px solid var(--borda); border-radius: 12px; padding: 24px; width: min(380px, 92vw); margin: 0; }
+.cartao-login h1 { margin: 0 0 4px; color: var(--cor); }
+.cartao-login .formulario { border: none; padding: 0; max-width: none; }
+
+@media (max-width: 720px) {
+  table { display: block; overflow-x: auto; }
+}

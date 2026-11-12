@@ -11,15 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // Um unico servlet cuida do CRUD de todos os cadastros. A tabela vem no
-// parametro "tabela" e a operacao no "acao". As telas ficam no crud.jsp.
-@WebServlet("/crud")
+// parametro "tabela" e a operacao no "acao". As telas ficam em admin_crud.jsp.
+// Faz parte do modulo /admin da aplicacao da clinica (so o gerente entra).
+@WebServlet("/admin/crud")
 public class CrudServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Tabela tabela = Tabela.por(req.getParameter("tabela"));
         if (tabela == null) {
-            resp.sendRedirect("index.jsp");
+            Painel.redirecionar(resp, Painel.base(req) + "/admin");
             return;
         }
         try {
@@ -36,7 +37,7 @@ public class CrudServlet extends HttpServlet {
             throw new ServletException(e);
         }
         req.setAttribute("tabela", tabela);
-        req.getRequestDispatcher("/crud.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/paginas/admin_crud.jsp").forward(req, resp);
     }
 
     @Override
@@ -60,6 +61,6 @@ public class CrudServlet extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException(e);
         }
-        resp.sendRedirect("crud?tabela=" + tabela.nome());
+        Painel.redirecionar(resp, Painel.base(req) + "/admin/crud?tabela=" + tabela.nome());
     }
 }

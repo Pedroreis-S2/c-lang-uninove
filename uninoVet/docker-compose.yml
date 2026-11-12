@@ -20,6 +20,7 @@ services:
       MYSQL_DATABASE: uninovet
       MYSQL_USER: uninovet
       MYSQL_PASSWORD: uninovet
+      TZ: America/Sao_Paulo
     ports:
       - "3306:3306"
     volumes:
@@ -40,6 +41,10 @@ services:
       DB_PASSWORD: uninovet
       # Endereco do app Flutter (o painel mostra um link para ele).
       APP_URL: ${APP_URL:-http://localhost:5000}
+      UPLOADS_DIR: /uploads
+      TZ: America/Sao_Paulo
+    volumes:
+      - uploads:/uploads
     ports:
       - "8080:8080"
     depends_on:
@@ -81,3 +86,4 @@ services:
 
 volumes:
   mobile-pub-cache:
+  uploads:

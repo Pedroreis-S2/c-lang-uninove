@@ -19,4 +19,7 @@ COPY src/ /tmp/src/
 RUN javac -cp "/usr/local/tomcat/lib/servlet-api.jar:WEB-INF/lib/mysql-connector-j.jar" \
       -d WEB-INF/classes $(find /tmp/src -name "*.java")
 
+# Pasta dos documentos (receitas, laudos). Em producao vira um volume.
+RUN mkdir -p /uploads
+
 EXPOSE 8080

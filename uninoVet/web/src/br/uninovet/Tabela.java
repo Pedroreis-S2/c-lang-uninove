@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// Cada cadastro do painel (tutor, veterinario, animal, consulta) e descrito por
+// Cada cadastro do painel (tutor, veterinario, animal, servico, consulta) e descrito por
 // um objeto Tabela com o nome no banco, o titulo na tela e os campos editaveis.
 public class Tabela {
 
@@ -37,10 +37,13 @@ public class Tabela {
         Tabela tutor = new Tabela("tutor", "Tutores", "nome", "telefone", "email");
         Tabela veterinario = new Tabela("veterinario", "Veterinários", "nome", "crmv", "especialidade");
         Tabela animal = new Tabela("animal", "Animais", "nome", "especie", "raca", "tutor_id");
-        Tabela consulta = new Tabela("consulta", "Consultas", "animal_id", "veterinario_id", "data_hora", "motivo", "status");
+        Tabela servico = new Tabela("tipo_servico", "Serviços", "nome", "categoria", "duracao_minutos", "ativo");
+        Tabela consulta = new Tabela("consulta", "Consultas", "animal_id", "veterinario_id", "tipo_servico_id",
+                "data_hora", "fim", "motivo", "status");
         REGISTRO.put(tutor.nome(), tutor);
         REGISTRO.put(veterinario.nome(), veterinario);
         REGISTRO.put(animal.nome(), animal);
+        REGISTRO.put(servico.nome(), servico);
         REGISTRO.put(consulta.nome(), consulta);
     }
 
