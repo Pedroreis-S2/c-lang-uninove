@@ -1,0 +1,763 @@
+From ee29bee4450110816e264714b1e3e61e28dce261 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 10 Nov 2026 00:44:20 +0000
+Subject: [PATCH 1/3] Adiciona requisitos futuros do UninoVet
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_017coafhFF9g2AvBj9wzDe4u
+---
+ uninoVet/docs/requisitos-futuros.txt | 127 +++++++++++++++++++++++++++
+ 1 file changed, 127 insertions(+)
+ create mode 100644 uninoVet/docs/requisitos-futuros.txt
+
+diff --git a/uninoVet/docs/requisitos-futuros.txt b/uninoVet/docs/requisitos-futuros.txt
+new file mode 100644
+index 0000000..6ad35e9
+--- /dev/null
++++ b/uninoVet/docs/requisitos-futuros.txt
+@@ -0,0 +1,127 @@
++UNINOVET - REQUISITOS FUTUROS
++=============================================================
++Base: secao "8. Proximos passos (ideias)" de docs/UninoVet-Documentacao.pdf,
++detalhada a partir da arquitetura descrita no mesmo documento
++(app Flutter -> API JSON do painel Java -> MySQL).
++
++Legenda de prioridade: [A] alta  [M] media  [B] baixa
++Legenda de situacao:   (pendente) | (feito)
++
++
++1. VISAO GERAL
++-------------------------------------------------------------
++Hoje o app Flutter apenas LISTA agendamentos (somente leitura) e o painel
++Java e aberto, sem autenticacao. A evolucao prevista torna o app capaz de
++gerenciar agendamentos, melhora a usabilidade do painel, protege o acesso
++e prepara o projeto para rodar fora da maquina local.
++
++
++2. REQUISITOS FUNCIONAIS
++-------------------------------------------------------------
++
++RF01 [A] Criar agendamento pelo app (pendente)
++  - O app deve ter uma tela/formulario para criar uma consulta, escolhendo
++    animal, veterinario, data/hora e motivo.
++  - A consulta nova nasce com status AGENDADA.
++  - O painel deve expor um novo endpoint POST (ex.: POST /api/agendamentos)
++    que recebe JSON e grava na tabela consulta.
++  - O endpoint deve validar os campos (animal e veterinario existentes,
++    data/hora preenchida) e devolver erro claro em caso de falha.
++  - Apos criar, a lista do app deve ser atualizada.
++
++RF02 [A] Cancelar agendamento pelo app (pendente)
++  - No detalhe da consulta (bottom sheet), o app deve oferecer a acao
++    "Cancelar", com confirmacao do usuario.
++  - O painel deve expor um endpoint para alterar o status para CANCELADA
++    (ex.: PUT/POST /api/agendamentos/{id}/cancelar).
++  - Apenas consultas com status AGENDADA podem ser canceladas.
++  - O cartao deve refletir o novo status e respeitar o filtro "Canceladas".
++
++RF03 [M] Listas de selecao no formulario web (pendente)
++  - No painel, os campos de chave estrangeira (tutor_id em animal;
++    animal_id e veterinario_id em consulta) devem deixar de ser digitados
++    como numero e passar a ser listas de selecao.
++  - A lista mostra o nome (tutor, animal, veterinario) e grava o id.
++  - Na edicao, o item atual ja vem selecionado.
++
++RF04 [A] Login no painel administrativo (pendente)
++  - Rotas do painel (/, /crud, e o que mais for administrativo) exigem
++    usuario e senha.
++  - Deve haver tela de login, logout e sessao com expiracao.
++  - Senhas nao podem ser guardadas em texto puro (usar hash com salt).
++  - Usuario sem sessao valida e redirecionado para o login.
++  - Definir se a API usada pelo app tambem passa a exigir autenticacao
++    (ver RNF04 e a questao em aberto Q1).
++
++RF05 [B] Reaproveitamento para outro negocio (pendente)
++  - Trocar de segmento deve exigir mexer apenas em db/init.sql e na pasta
++    mobile/lib/config/ (textos, tema, ambiente).
++  - Revisar e documentar esse passo a passo quando a troca acontecer.
++
++
++3. REQUISITOS NAO FUNCIONAIS
++-------------------------------------------------------------
++
++RNF01 [A] Endereco da API configuravel por ambiente (feito em parte)
++  - O app nao deve ter o endereco da API fixo para localhost:8080.
++  - Deve funcionar igual no local, no Codespace e em producao.
++  - Ja atendido para local/Codespace pelo proxy nginx (porta unica 3000,
++    com /, /admin e /api na mesma origem). Falta definir e documentar o
++    endereco de producao e o uso de HTTPS.
++
++RNF02 [M] Execucao em producao (pendente)
++  - Definir onde o sistema sera hospedado e como sobe (docker compose ou
++    similar).
++  - Credenciais do banco e segredos fora do codigo, via variaveis de
++    ambiente.
++  - Banco nao deve ficar exposto publicamente (hoje a porta 3306 e aberta).
++
++RNF03 [M] Persistencia e manutencao do banco (pendente)
++  - Hoje o banco e criado so pelo init.sql, sem migracoes.
++  - Ao evoluir o esquema (ex.: tabela de usuarios do RF04), definir como
++    aplicar mudancas sem perder dados.
++  - Definir rotina de backup para producao.
++
++RNF04 [A] Seguranca (pendente)
++  - CORS hoje esta liberado para qualquer origem; restringir em producao.
++  - Proteger contra SQL injection nos novos endpoints (usar
++    PreparedStatement).
++  - Escapar saida nas paginas JSP para evitar XSS.
++  - Trafego em producao somente por HTTPS.
++
++RNF05 [M] Testes (pendente)
++  - Cobrir com testes (flutter test) as novas telas e acoes do app.
++  - Testar os novos endpoints da API (sucesso, validacao e erro).
++
++RNF06 [B] Usabilidade do app (pendente)
++  - Mostrar estados de carregando, erro e lista vazia nas novas telas.
++  - Textos novos centralizados em lib/config/textos.dart, mantendo o
++    padrao atual.
++
++
++4. REGRAS DE NEGOCIO
++-------------------------------------------------------------
++RN01  Status da consulta: AGENDADA, CONCLUIDA ou CANCELADA (ENUM no banco).
++RN02  Consulta CANCELADA ou CONCLUIDA nao pode voltar a AGENDADA pelo app.
++RN03  Todo animal pertence a um tutor; toda consulta a um animal e a um
++      veterinario (integridade por chave estrangeira).
++RN04  (a definir) Impedir dois agendamentos no mesmo horario para o mesmo
++      veterinario - ver questao em aberto Q2.
++
++
++5. QUESTOES EM ABERTO
++-------------------------------------------------------------
++Q1  O app tera login proprio (tutor) ou continuara anonimo, com a API de
++    agendamentos aberta? Isso define o alcance do RF04.
++Q2  Havera regra de conflito de horario entre consultas (RN04)?
++Q3  Quem pode criar agendamentos: so a clinica (painel), ou tambem o tutor
++    pelo app?
++Q4  Onde sera hospedado o ambiente de producao (RNF02)?
++
++
++6. SUGESTAO DE ORDEM DE ENTREGA
++-------------------------------------------------------------
++Fase 1 - RF01 + RF02 (app cria e cancela) e testes (RNF05).
++Fase 2 - RF03 (selecao no formulario web).
++Fase 3 - RF04 (login) + RNF04 (seguranca).
++Fase 4 - RNF02/RNF03 (producao, migracoes, backup) e RF05 (outro negocio).
+-- 
+2.43.0
+
+
+From aed1ed2a70cfa620a427b6dd8ca9dd01b24b4e4b Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 10 Nov 2026 00:51:31 +0000
+Subject: [PATCH 2/3] Reescreve requisitos futuros do UninoVet com a nova visao
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_017coafhFF9g2AvBj9wzDe4u
+---
+ uninoVet/docs/requisitos-futuros.txt | 354 +++++++++++++++++++--------
+ 1 file changed, 247 insertions(+), 107 deletions(-)
+
+diff --git a/uninoVet/docs/requisitos-futuros.txt b/uninoVet/docs/requisitos-futuros.txt
+index 6ad35e9..89f26c2 100644
+--- a/uninoVet/docs/requisitos-futuros.txt
++++ b/uninoVet/docs/requisitos-futuros.txt
+@@ -1,127 +1,267 @@
+-UNINOVET - REQUISITOS FUTUROS
++UNINOVET - REQUISITOS FUTUROS (v2)
+ =============================================================
+-Base: secao "8. Proximos passos (ideias)" de docs/UninoVet-Documentacao.pdf,
+-detalhada a partir da arquitetura descrita no mesmo documento
+-(app Flutter -> API JSON do painel Java -> MySQL).
++Base: visao do projeto descrita pelo autor + secao "8. Proximos passos"
++de docs/UninoVet-Documentacao.pdf.
++Esta versao substitui a v1, que era so baseada no PDF.
+ 
+ Legenda de prioridade: [A] alta  [M] media  [B] baixa
+-Legenda de situacao:   (pendente) | (feito)
++Todos os itens abaixo estao (pendente), salvo indicacao.
+ 
+ 
+ 1. VISAO GERAL
+ -------------------------------------------------------------
+-Hoje o app Flutter apenas LISTA agendamentos (somente leitura) e o painel
+-Java e aberto, sem autenticacao. A evolucao prevista torna o app capaz de
+-gerenciar agendamentos, melhora a usabilidade do painel, protege o acesso
+-e prepara o projeto para rodar fora da maquina local.
++Duas aplicacoes, para dois publicos:
+ 
++  APP DO CLIENTE (Flutter, mobile/web)
++    Para o tutor do pet. Login, ver pets, consultas e documentos,
++    cadastrar pets, SOLICITAR consultas e banho e tosa.
+ 
+-2. REQUISITOS FUNCIONAIS
++  APP DA CLINICA (Java, JSP/Servlet) - nome a definir (ex.: "painel da
++    secretaria")
++    Para gerente, secretario e veterinarios. Login, agenda, aceite de
++    solicitacoes, atendimento e documentos. Dentro dela, a rota /admin
++    abre o painel atual (index.jsp, CRUD direto das tabelas).
++
++Os dois usam o mesmo banco MySQL. A aplicacao Java tambem serve a API
++JSON usada pelo app Flutter. Os dois exigem login.
++
++Nota de escopo: trabalho de faculdade; login simples, guardado no
++proprio banco. Nada de OAuth, provedores externos ou recuperacao de
++senha complexa.
++
++
++2. PAPEIS (PERMISSOES)
++-------------------------------------------------------------
++  CLIENTE      Usa o app Flutter. Ve so os proprios dados.
++  VETERINARIO  Usa a app da clinica. Ve a propria agenda, conclui
++               consultas, anexa documentos.
++  SECRETARIO   Usa a app da clinica. Aceita/recusa solicitacoes, gerencia
++               a agenda, cadastros.
++  GERENTE      Tudo do secretario + acesso a /admin (CRUD do banco) e
++               gestao de usuarios.
++
++Quem acessa o que:
++  - /admin (CRUD do banco): somente GERENTE (a confirmar - Q3).
++  - Mudar status da consulta para CONCLUIDA: somente VETERINARIO.
++  - Aceitar/recusar solicitacao: SECRETARIO e GERENTE.
++  - Cliente nunca ve dados de outro cliente.
++
++
++3. REQUISITOS FUNCIONAIS - AUTENTICACAO
++-------------------------------------------------------------
++RF01 [A] Login e logout nas duas aplicacoes.
++  - Tela de login na app da clinica (sessao por cookie, JSP).
++  - Tela de login no app Flutter (a API devolve um token que o app
++    guarda e envia nas chamadas seguintes).
++  - Senha guardada com hash (nunca em texto puro). Sessao/token expira.
++
++RF02 [A] Cadastro de usuarios.
++  - Cliente pode se cadastrar sozinho pelo app (cria usuario + tutor).
++  - Funcionarios (secretario, veterinario, gerente) sao criados pelo
++    gerente na app da clinica.
++
++RF03 [A] Vinculo usuario <-> pessoa.
++  - Usuario com papel CLIENTE esta ligado a um tutor.
++  - Usuario com papel VETERINARIO esta ligado a um veterinario.
++  - Os vinculos atuais do banco (tutor, animal, consulta) continuam
++    iguais.
++
++RF04 [B] Preferencias do usuario (tabela de preferencias): tema do app,
++  notificacoes, etc. Item opcional.
++
++RF05 [A] Controle de acesso por papel em todas as rotas e endpoints
++  (ver secao 2). Rota sem permissao devolve 403 (ou volta ao login).
++
++
++4. REQUISITOS FUNCIONAIS - APP DO CLIENTE (Flutter)
++-------------------------------------------------------------
++RF10 [A] Ver os proprios pets e cadastrar/editar pet.
++RF11 [A] Ver a lista de consultas e servicos (filtro por status, como
++  hoje) e o detalhe de cada um.
++RF12 [A] Solicitar agendamento.
++  - Escolher pet, tipo de servico (consulta, banho e tosa, ...), data e
++    horario entre os livres e, quando fizer sentido, o especialista.
++  - O app mostra so horarios disponiveis (ver secao 6).
++  - A solicitacao NAO reserva o horario: nasce com status SOLICITADA e
++    aguarda a clinica.
++RF13 [A] Acompanhar o status da solicitacao: SOLICITADA, ACEITA
++  (reservada), RECUSADA, CONCLUIDA, CANCELADA.
++RF14 [A] Cancelar pelo app, somente com no minimo 30 minutos de
++  antecedencia (regra RN06). Depois disso o botao some/fica
++  desabilitado, com aviso para ligar para a clinica.
++RF15 [M] Ver e baixar documentos anexados as consultas do proprio
++  cliente: receitas, laudos e outros documentos medicos veterinarios.
++
++
++5. REQUISITOS FUNCIONAIS - APP DA CLINICA (Java)
++-------------------------------------------------------------
++RF20 [A] Estrutura e rotas.
++  - Aplicacao propria, com login e menu por papel.
++  - /login e /logout
++  - /painel          pagina inicial (resumo do dia, solicitacoes novas)
++  - /agenda          agenda por dia/veterinario
++  - /solicitacoes    fila de solicitacoes a aceitar
++  - /admin           painel atual (index.jsp -> CRUD das 4 tabelas
++                     + novas tabelas), restrito conforme secao 2
++  - /api/...         API usada pelo app Flutter
++
++RF21 [A] Fila de solicitacoes.
++  - Lista as consultas com status SOLICITADA.
++  - Secretario/gerente pode ACEITAR (vira reservada) ou RECUSAR (com
++    motivo opcional).
++  - Ao aceitar, o sistema revalida o conflito de horario (RN03) e
++    bloqueia os slots ocupados. Se ja estiver ocupado, nao aceita e
++    avisa.
++
++RF22 [A] Agenda.
++  - Visualizacao dos horarios ocupados/livres por dia.
++  - Secretario pode criar agendamento direto (cliente que ligou), que
++    ja nasce ACEITA, respeitando as mesmas regras de conflito.
++  - Secretario/gerente pode cancelar agendamento sem a regra dos 30 min.
++
++RF23 [A] Conclusao de consulta.
++  - Somente VETERINARIO marca a consulta como CONCLUIDA (ou CANCELADA,
++    ex.: cliente nao compareceu).
++  - Veterinario so altera consultas atribuidas a ele.
++
++RF24 [A] Documentos da consulta.
++  - Veterinario anexa documentos a uma consulta: receita, laudo, outros.
++  - Cada documento guarda: consulta, tipo, nome do arquivo, quem
++    enviou, data.
++  - Tipos aceitos (a definir): PDF, JPG, PNG, com limite de tamanho.
++  - O cliente ve e baixa esses documentos pelo app (RF15).
++
++RF25 [A] Tipos de servico (cadastro).
++  - Nome, categoria (CONSULTA, BANHO_TOSA, ...), duracao em minutos.
++  - A duracao define quantos slots o servico ocupa (RN02).
++  - Cadastro feito pelo gerente.
++
++RF26 [M] Formularios do CRUD com listas de selecao em vez de ids
++  (item 8 do PDF): tutor, animal, veterinario, tipo de servico.
++
++
++6. REGRAS DE NEGOCIO - AGENDA
++-------------------------------------------------------------
++RN01  A agenda e dividida em slots de 30 minutos, em horario cravado
++      (ex.: 13:00, 13:30, 14:00).
++
++RN02  Cada tipo de servico tem uma duracao. O servico ocupa todos os
++      slots que ela cobre, a partir do inicio.
++      Exemplo: servico de 1h30 marcado as 13:00 ocupa 13:00, 13:30 e
++      14:00. O proximo horario livre e 14:30.
++      Formula: slots = ceil(duracao / 30); fim = inicio + duracao.
++
++RN03  Um horario so fica ocupado quando a solicitacao e ACEITA.
++      SOLICITADA nao bloqueia nada. Dois clientes podem solicitar o
++      mesmo horario; ao aceitar um, o outro deixa de poder ser aceito
++      (conflito) e a clinica recusa ou remarca.
++
++RN04  Nao pode haver duas reservas ativas que se sobreponham no mesmo
++      recurso. Sobreposicao: inicio_A < fim_B e inicio_B < fim_A.
++      "Recurso" = veterinario (ou profissional) - ver Q1.
++
++RN05  Reservas CANCELADAS ou RECUSADAS liberam os slots.
++
++RN06  Cancelamento pelo cliente: somente ate 30 minutos antes do inicio
++      (agora <= inicio - 30 min). Passou disso, so a clinica cancela.
++
++RN07  Status da consulta: SOLICITADA -> ACEITA -> CONCLUIDA; ou
++      SOLICITADA -> RECUSADA; ou CANCELADA a partir de SOLICITADA/ACEITA.
++      Concluida e Cancelada sao finais.
++      (O ENUM atual tem AGENDADA/CONCLUIDA/CANCELADA; AGENDADA passa a
++      equivaler a ACEITA, e entram SOLICITADA e RECUSADA.)
++
++RN08  Nao e possivel solicitar horario no passado nem fora do
++      expediente da clinica (expediente a definir - Q2).
++
++
++7. MUDANCAS NO BANCO (PROPOSTA)
+ -------------------------------------------------------------
++Mantem tutor, animal, veterinario e consulta. Acrescenta:
++
++  usuario            id, email (unico), senha_hash, papel, ativo,
++                     tutor_id (FK, opcional), veterinario_id (FK,
++                     opcional)
++  usuario_preferencia  usuario_id, chave, valor
++  tipo_servico       id, nome, categoria, duracao_minutos, ativo
++  documento          id, consulta_id (FK), tipo (RECEITA/LAUDO/OUTRO),
++                     nome_arquivo, caminho (ou conteudo), enviado_por
++                     (FK usuario), criado_em
++
++  consulta (alteracoes)
++    + tipo_servico_id (FK)
++    + inicio, fim (substitui data_hora; fim = inicio + duracao)
++    + status: SOLICITADA, ACEITA, RECUSADA, CONCLUIDA, CANCELADA
++    + solicitada_em, motivo_recusa (opcional)
+ 
+-RF01 [A] Criar agendamento pelo app (pendente)
+-  - O app deve ter uma tela/formulario para criar uma consulta, escolhendo
+-    animal, veterinario, data/hora e motivo.
+-  - A consulta nova nasce com status AGENDADA.
+-  - O painel deve expor um novo endpoint POST (ex.: POST /api/agendamentos)
+-    que recebe JSON e grava na tabela consulta.
+-  - O endpoint deve validar os campos (animal e veterinario existentes,
+-    data/hora preenchida) e devolver erro claro em caso de falha.
+-  - Apos criar, a lista do app deve ser atualizada.
+-
+-RF02 [A] Cancelar agendamento pelo app (pendente)
+-  - No detalhe da consulta (bottom sheet), o app deve oferecer a acao
+-    "Cancelar", com confirmacao do usuario.
+-  - O painel deve expor um endpoint para alterar o status para CANCELADA
+-    (ex.: PUT/POST /api/agendamentos/{id}/cancelar).
+-  - Apenas consultas com status AGENDADA podem ser canceladas.
+-  - O cartao deve refletir o novo status e respeitar o filtro "Canceladas".
+-
+-RF03 [M] Listas de selecao no formulario web (pendente)
+-  - No painel, os campos de chave estrangeira (tutor_id em animal;
+-    animal_id e veterinario_id em consulta) devem deixar de ser digitados
+-    como numero e passar a ser listas de selecao.
+-  - A lista mostra o nome (tutor, animal, veterinario) e grava o id.
+-  - Na edicao, o item atual ja vem selecionado.
+-
+-RF04 [A] Login no painel administrativo (pendente)
+-  - Rotas do painel (/, /crud, e o que mais for administrativo) exigem
+-    usuario e senha.
+-  - Deve haver tela de login, logout e sessao com expiracao.
+-  - Senhas nao podem ser guardadas em texto puro (usar hash com salt).
+-  - Usuario sem sessao valida e redirecionado para o login.
+-  - Definir se a API usada pelo app tambem passa a exigir autenticacao
+-    (ver RNF04 e a questao em aberto Q1).
+-
+-RF05 [B] Reaproveitamento para outro negocio (pendente)
+-  - Trocar de segmento deve exigir mexer apenas em db/init.sql e na pasta
+-    mobile/lib/config/ (textos, tema, ambiente).
+-  - Revisar e documentar esse passo a passo quando a troca acontecer.
+-
+-
+-3. REQUISITOS NAO FUNCIONAIS
++Como no resto do projeto: tudo criado pelo init.sql, sem migracoes (o
++banco e recriado). Se isso incomodar com dados reais, ver RNF03.
++
++
++8. ARQUITETURA PROPOSTA
+ -------------------------------------------------------------
++  [Flutter]  --JSON/token-->  [App Java da clinica]  --JDBC-->  [MySQL]
++  cliente                     painel + /admin + /api             banco
++                                   ^
++                                   | cookie de sessao
++                              [navegador da equipe]
++
++  nginx (proxy, porta 3000):
++    /                -> app Flutter
++    /clinica/        -> app Java (login, painel, agenda, solicitacoes)
++    /clinica/admin   -> painel atual (CRUD)
++    /api/            -> API (no app Java)
++  (nomes das rotas sao exemplo)
++
++Por que um unico backend Java: a regra de agenda (conflito, duracao,
++30 min) fica em UM lugar so, usada tanto pelo painel quanto pela API.
++
+ 
+-RNF01 [A] Endereco da API configuravel por ambiente (feito em parte)
+-  - O app nao deve ter o endereco da API fixo para localhost:8080.
+-  - Deve funcionar igual no local, no Codespace e em producao.
+-  - Ja atendido para local/Codespace pelo proxy nginx (porta unica 3000,
+-    com /, /admin e /api na mesma origem). Falta definir e documentar o
+-    endereco de producao e o uso de HTTPS.
+-
+-RNF02 [M] Execucao em producao (pendente)
+-  - Definir onde o sistema sera hospedado e como sobe (docker compose ou
+-    similar).
+-  - Credenciais do banco e segredos fora do codigo, via variaveis de
+-    ambiente.
+-  - Banco nao deve ficar exposto publicamente (hoje a porta 3306 e aberta).
+-
+-RNF03 [M] Persistencia e manutencao do banco (pendente)
+-  - Hoje o banco e criado so pelo init.sql, sem migracoes.
+-  - Ao evoluir o esquema (ex.: tabela de usuarios do RF04), definir como
+-    aplicar mudancas sem perder dados.
+-  - Definir rotina de backup para producao.
+-
+-RNF04 [A] Seguranca (pendente)
+-  - CORS hoje esta liberado para qualquer origem; restringir em producao.
+-  - Proteger contra SQL injection nos novos endpoints (usar
+-    PreparedStatement).
+-  - Escapar saida nas paginas JSP para evitar XSS.
+-  - Trafego em producao somente por HTTPS.
+-
+-RNF05 [M] Testes (pendente)
+-  - Cobrir com testes (flutter test) as novas telas e acoes do app.
+-  - Testar os novos endpoints da API (sucesso, validacao e erro).
+-
+-RNF06 [B] Usabilidade do app (pendente)
+-  - Mostrar estados de carregando, erro e lista vazia nas novas telas.
+-  - Textos novos centralizados em lib/config/textos.dart, mantendo o
+-    padrao atual.
+-
+-
+-4. REGRAS DE NEGOCIO
++9. REQUISITOS NAO FUNCIONAIS
+ -------------------------------------------------------------
+-RN01  Status da consulta: AGENDADA, CONCLUIDA ou CANCELADA (ENUM no banco).
+-RN02  Consulta CANCELADA ou CONCLUIDA nao pode voltar a AGENDADA pelo app.
+-RN03  Todo animal pertence a um tutor; toda consulta a um animal e a um
+-      veterinario (integridade por chave estrangeira).
+-RN04  (a definir) Impedir dois agendamentos no mesmo horario para o mesmo
+-      veterinario - ver questao em aberto Q2.
++RNF01 [A] Regras de agenda no servidor. O app nunca decide sozinho se um
++  horario esta livre; o servidor valida de novo ao solicitar e ao
++  aceitar (evita corrida entre dois usuarios).
++RNF02 [A] Seguranca basica: hash de senha, PreparedStatement em todo SQL,
++  escape de saida nas JSPs, token/sessao com expiracao, CORS restrito
++  em producao.
++RNF03 [M] Upload de documentos: onde ficam os arquivos (volume do Docker
++  ou no banco), limite de tamanho, tipos permitidos, e checagem de
++  permissao no download (cliente so baixa o que e dele).
++RNF04 [M] Tudo continua subindo com docker compose up, em uma porta so
++  (proxy), local e Codespace. Segredos em variaveis de ambiente.
++RNF05 [M] Testes: regra de conflito de horario (RN02-RN04), regra dos
++  30 min (RN06), permissoes por papel, testes do app Flutter.
++RNF06 [B] Textos do app em lib/config/textos.dart, como hoje.
+ 
+ 
+-5. QUESTOES EM ABERTO
++10. QUESTOES EM ABERTO
+ -------------------------------------------------------------
+-Q1  O app tera login proprio (tutor) ou continuara anonimo, com a API de
+-    agendamentos aberta? Isso define o alcance do RF04.
+-Q2  Havera regra de conflito de horario entre consultas (RN04)?
+-Q3  Quem pode criar agendamentos: so a clinica (painel), ou tambem o tutor
+-    pelo app?
+-Q4  Onde sera hospedado o ambiente de producao (RNF02)?
++Q1  O conflito de horario e por veterinario (cada um tem sua agenda) ou
++    da clinica toda? E banho e tosa tem profissional/vaga propria?
++Q2  Qual o expediente (dias e horas) e ha intervalo/almoco?
++Q3  /admin (CRUD cru do banco) e so do GERENTE ou o secretario tambem?
++Q4  O cliente escolhe o veterinario ou so o tipo de servico e a clinica
++    atribui ao aceitar?
++Q5  Solicitacao sem resposta expira? Cliente recebe notificacao (so ver
++    no app, ou push/e-mail)?
++Q6  Cliente pode reagendar ou so cancelar e solicitar de novo?
++Q7  Arquivos dos documentos: disco (volume) ou dentro do MySQL (BLOB)?
++Q8  Nome da aplicacao da clinica.
+ 
+ 
+-6. SUGESTAO DE ORDEM DE ENTREGA
++11. SUGESTAO DE ORDEM DE ENTREGA
+ -------------------------------------------------------------
+-Fase 1 - RF01 + RF02 (app cria e cancela) e testes (RNF05).
+-Fase 2 - RF03 (selecao no formulario web).
+-Fase 3 - RF04 (login) + RNF04 (seguranca).
+-Fase 4 - RNF02/RNF03 (producao, migracoes, backup) e RF05 (outro negocio).
++Fase 1  Banco: usuario, tipo_servico, novos campos de consulta.
++        Login nas duas pontas e papeis (RF01-RF03, RF05).
++Fase 2  App da clinica: reorganizar rotas, /admin dentro dela, menu por
++        papel (RF20).
++Fase 3  Agenda e regras: slots, duracao, conflito, API de horarios livres
++        (RN01-RN05, RNF01).
++Fase 4  Cliente solicita; clinica aceita/recusa (RF12, RF13, RF21, RF22).
++Fase 5  Cancelamento com regra de 30 min; conclusao pelo veterinario
++        (RF14, RF23).
++Fase 6  Documentos: upload pelo veterinario, download pelo cliente
++        (RF24, RF15).
++Fase 7  Acabamento: listas de selecao no CRUD (RF26), preferencias
++        (RF04), testes (RNF05).
+-- 
+2.43.0
+
+
+From a4efd20d1364283a7db39e57369158844a2517c7 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Thu, 12 Nov 2026 21:46:58 +0000
+Subject: [PATCH 3/3] Atualiza requisitos futuros e adiciona o PDF
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_017coafhFF9g2AvBj9wzDe4u
+---
+ uninoVet/docs/UninoVet-Requisitos-Futuros.pdf | Bin 0 -> 12548 bytes
+ uninoVet/docs/requisitos-futuros.txt          |  17 -----------------
+ 2 files changed, 17 deletions(-)
+ create mode 100644 uninoVet/docs/UninoVet-Requisitos-Futuros.pdf
+
+diff --git a/uninoVet/docs/UninoVet-Requisitos-Futuros.pdf b/uninoVet/docs/UninoVet-Requisitos-Futuros.pdf
+new file mode 100644
+index 0000000000000000000000000000000000000000..ed6ca7d13e1457c59379fdfdd597c7d1f28f2cdc
+GIT binary patch
+literal 12548
+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
+B9Wnp_
+
+literal 0
+HcmV?d00001
+
+diff --git a/uninoVet/docs/requisitos-futuros.txt b/uninoVet/docs/requisitos-futuros.txt
+index 89f26c2..b58b06b 100644
+--- a/uninoVet/docs/requisitos-futuros.txt
++++ b/uninoVet/docs/requisitos-futuros.txt
+@@ -248,20 +248,3 @@ Q5  Solicitacao sem resposta expira? Cliente recebe notificacao (so ver
+ Q6  Cliente pode reagendar ou so cancelar e solicitar de novo?
+ Q7  Arquivos dos documentos: disco (volume) ou dentro do MySQL (BLOB)?
+ Q8  Nome da aplicacao da clinica.
+-
+-
+-11. SUGESTAO DE ORDEM DE ENTREGA
+--------------------------------------------------------------
+-Fase 1  Banco: usuario, tipo_servico, novos campos de consulta.
+-        Login nas duas pontas e papeis (RF01-RF03, RF05).
+-Fase 2  App da clinica: reorganizar rotas, /admin dentro dela, menu por
+-        papel (RF20).
+-Fase 3  Agenda e regras: slots, duracao, conflito, API de horarios livres
+-        (RN01-RN05, RNF01).
+-Fase 4  Cliente solicita; clinica aceita/recusa (RF12, RF13, RF21, RF22).
+-Fase 5  Cancelamento com regra de 30 min; conclusao pelo veterinario
+-        (RF14, RF23).
+-Fase 6  Documentos: upload pelo veterinario, download pelo cliente
+-        (RF24, RF15).
+-Fase 7  Acabamento: listas de selecao no CRUD (RF26), preferencias
+-        (RF04), testes (RNF05).
+-- 
+2.43.0
+
