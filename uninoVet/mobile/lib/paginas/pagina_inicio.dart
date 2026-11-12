@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../config/tema.dart';
 import '../config/textos.dart';
 import '../modelos/agendamento.dart';
+import '../servicos/sessao.dart';
 import '../widgets/avatar_pet.dart';
 import '../widgets/patinha.dart';
 
@@ -113,6 +114,16 @@ class PaginaInicio extends StatelessWidget {
 class _Boasvindas extends StatelessWidget {
   const _Boasvindas();
 
+  // Logado: "Olá, Ana". Sem login (testes) mantem o texto da equipe.
+  String _saudacao() {
+    final usuario = Sessao.usuario;
+    if (usuario == null) {
+      return Textos.saudacao;
+    }
+    final primeiroNome = usuario.nome.trim().split(' ').first;
+    return 'Olá, $primeiroNome';
+  }
+
   @override
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
@@ -141,7 +152,7 @@ class _Boasvindas extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                Textos.saudacao,
+                _saudacao(),
                 style: texto.headlineSmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,

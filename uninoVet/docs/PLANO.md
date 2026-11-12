@@ -2,6 +2,8 @@
 
 Documento de referência para as próximas etapas. A ideia: sempre que uma fase terminar, marcar aqui e seguir para a próxima, sem perder o desenho final.
 
+> **Atualização:** o desenho mudou para o documento `requisitos-futuros` (patch v2): a aplicação Java virou a **aplicação da clínica** (JSP com login por perfil, agenda e solicitações) e o painel antigo é o módulo `/admin`. O Flutter é o app do **cliente**. Detalhes e contas de exemplo no `README.md`.
+
 ## 1. Onde estamos
 
 - Painel Java (JSP/Servlet) em `:8080` + API JSON `/api/agendamentos`.
@@ -117,12 +119,12 @@ Comum: Login, Cadastro, Perfil, modo claro/escuro.
 |---|---|---|
 | 0 | Base: painel Java, API, app Flutter, Docker, Codespace, hot reload | feito |
 | 1 | Visual moderno: barra, logo, avatares de pets, cartões, modo escuro | em andamento |
-| 2 | Migrations (Flyway) + estrutura de usuários e perfis | a fazer |
-| 3 | Login/cadastro (tutor) + filtro de acesso na API | a fazer |
-| 4 | Pets do tutor + foto + "ver só o meu" | a fazer |
-| 5 | Solicitar consulta + tipos de consulta | a fazer |
-| 6 | Perfil veterinário: fila de pedidos, aceitar/recusar/concluir | a fazer |
-| 7 | Perfil gerente: veterinários, tipos, visão geral, auditoria | a fazer |
+| 2 | Estrutura de usuários e perfis (feita no `init.sql`; sem Flyway) | feito |
+| 3 | Login/cadastro (tutor) + filtro de acesso na API | feito |
+| 4 | Pets do tutor + "ver só o meu" (foto: a fazer) | feito, sem foto |
+| 5 | Solicitar consulta + tipos de serviço | feito |
+| 6 | Veterinário concluir/anexar documentos; secretaria aceita/recusa (painel Java `/clinica`) | feito |
+| 7 | Gerente: usuários e `/admin` (feito); auditoria (a fazer) | parcial |
 | 8 | Notificações (e-mail ou push), recuperação de senha, relatórios | opcional |
 
 Cada fase fecha com: testes do que foi criado, migration registrada, documentação atualizada aqui e PDF `UninoVet-Documentacao.pdf` regenerado.

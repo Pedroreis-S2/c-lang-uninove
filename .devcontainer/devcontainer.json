@@ -8,9 +8,10 @@
     },
     "ghcr.io/devcontainers/features/node:1": {}
   },
-  "forwardPorts": [8080, 5000],
+  "forwardPorts": [3000, 8080, 5000],
   "portsAttributes": {
-    "8080": { "label": "UninoVet - painel Java (admin)", "onAutoForward": "openBrowser" },
+    "3000": { "label": "UninoVet - porta unica (app + clinica + API)", "onAutoForward": "openBrowser" },
+    "8080": { "label": "UninoVet - aplicacao da clinica (Java)", "onAutoForward": "notify" },
     "5000": { "label": "App Flutter (Estudae ou UninoVet)", "onAutoForward": "notify" }
   },
   "customizations": {
