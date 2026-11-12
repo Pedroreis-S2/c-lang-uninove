@@ -275,13 +275,21 @@ class _BarraFiltros extends StatelessWidget {
     final chips = <Widget>[];
     for (final opcao in opcoes.entries) {
       chips.add(
-        ChoiceChip(
-          label: Text(opcao.value),
-          selected: filtro == opcao.key,
-          onSelected: (_) => aoMudar(opcao.key),
+        Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: ChoiceChip(
+            label: Text(opcao.value),
+            selected: filtro == opcao.key,
+            onSelected: (_) => aoMudar(opcao.key),
+          ),
         ),
       );
     }
-    return Wrap(spacing: 8, runSpacing: 4, children: chips);
+    // Uma linha so (rola de lado): com mais filtros, quebrar em duas linhas
+    // empurrava a lista para baixo.
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: chips),
+    );
   }
 }
