@@ -13,11 +13,13 @@ import '../widgets/titulo_pagina.dart';
 class PaginaAgendamentos extends StatefulWidget {
   final List<Agendamento> agendamentos;
   final bool larga;
+  final Future<void> Function(Agendamento agendamento)? aoCancelar;
 
   const PaginaAgendamentos({
     super.key,
     required this.agendamentos,
     required this.larga,
+    this.aoCancelar,
   });
 
   @override
@@ -82,8 +84,34 @@ class _PaginaAgendamentosState extends State<PaginaAgendamentos> {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      builder: (context) => DetalheAgendamento(agendamento: agendamento),
+      isScrollControlled: true,
+      builder: (contextoFolha) => SingleChildScrollView(
+        child: DetalheAgendamento(
+          agendamento: agendamento,
+          aoCancelar: _acaoDeCancelar(agendamento, fecharFolha: true),
+        ),
+      ),
     );
+  }
+
+  // So existe quando a pagina recebeu a funcao de cancelar (cliente logado).
+  VoidCallback? _acaoDeCancelar(Agendamento agendamento, {required bool fecharFolha}) {
+    final cancelar = widget.aoCancelar;
+    if (cancelar == null) {
+      return null;
+    }
+    return () async {
+      if (fecharFolha) {
+        Navigator.of(context).pop();
+      }
+      await cancelar(agendamento);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _selecionado = null;
+      });
+    };
   }
 
   @override
@@ -133,7 +161,12 @@ class _PaginaAgendamentosState extends State<PaginaAgendamentos> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, Tema.espaco, Tema.espaco, Tema.espaco),
         child: Card(
-          child: DetalheAgendamento(agendamento: selecionado),
+          child: SingleChildScrollView(
+            child: DetalheAgendamento(
+              agendamento: selecionado,
+              aoCancelar: _acaoDeCancelar(selecionado, fecharFolha: false),
+            ),
+          ),
         ),
       ),
     );
@@ -233,9 +266,11 @@ class _BarraFiltros extends StatelessWidget {
   Widget build(BuildContext context) {
     final opcoes = <String, String>{
       'TODOS': Textos.filtroTodos,
+      'SOLICITADA': 'Solicitadas',
       'AGENDADA': 'Agendadas',
       'CONCLUIDA': 'Concluídas',
       'CANCELADA': 'Canceladas',
+      'RECUSADA': 'Recusadas',
     };
     final chips = <Widget>[];
     for (final opcao in opcoes.entries) {

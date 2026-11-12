@@ -7,6 +7,12 @@ class Agendamento {
   final String dataHora;
   final String motivo;
   final String status;
+  final String tutor;
+  final String tipoServico;
+  final String fim;
+  final String motivoRecusa;
+  final bool podeCancelar;
+  final int totalDocumentos;
 
   const Agendamento({
     required this.id,
@@ -16,6 +22,12 @@ class Agendamento {
     required this.dataHora,
     required this.motivo,
     required this.status,
+    this.tutor = '',
+    this.tipoServico = '',
+    this.fim = '',
+    this.motivoRecusa = '',
+    this.podeCancelar = false,
+    this.totalDocumentos = 0,
   });
 
   factory Agendamento.doJson(Map<String, dynamic> json) {
@@ -27,7 +39,17 @@ class Agendamento {
       dataHora: json['data_hora'] as String? ?? '',
       motivo: json['motivo'] as String? ?? '',
       status: json['status'] as String? ?? 'AGENDADA',
+      tutor: json['tutor'] as String? ?? '',
+      tipoServico: json['tipo_servico'] as String? ?? '',
+      fim: json['fim'] as String? ?? '',
+      motivoRecusa: json['motivo_recusa'] as String? ?? '',
+      podeCancelar: _comoBooleano(json['pode_cancelar']),
+      totalDocumentos: json['total_documentos'] as int? ?? 0,
     );
+  }
+
+  static bool _comoBooleano(dynamic valor) {
+    return valor == true || valor == 1;
   }
 
   // Mostra "20/10/2026 09:00" a partir de "2026-10-20 09:00:00".

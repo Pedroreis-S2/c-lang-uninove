@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../config/textos.dart';
+import '../servicos/sessao.dart';
 import 'logo.dart';
 
 // Barra do topo: logo da clinica a esquerda e as acoes a direita.
@@ -8,12 +9,14 @@ class BarraApp extends StatelessWidget {
   final bool escuro;
   final VoidCallback aoAtualizar;
   final VoidCallback aoAlternarTema;
+  final VoidCallback? aoSair;
 
   const BarraApp({
     super.key,
     required this.escuro,
     required this.aoAtualizar,
     required this.aoAlternarTema,
+    this.aoSair,
   });
 
   @override
@@ -25,6 +28,9 @@ class BarraApp extends StatelessWidget {
       iconeTema = Icons.light_mode_outlined;
       dicaTema = Textos.temaClaro;
     }
+    final usuario = Sessao.usuario;
+    final iniciais = usuario == null ? 'GE' : usuario.iniciais;
+    final sair = aoSair;
     return Container(
       height: 68,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -48,12 +54,18 @@ class BarraApp extends StatelessWidget {
             onPressed: aoAlternarTema,
             icon: Icon(iconeTema),
           ),
+          if (sair != null)
+            IconButton(
+              tooltip: Textos.sair,
+              onPressed: sair,
+              icon: const Icon(Icons.logout),
+            ),
           const SizedBox(width: 6),
           CircleAvatar(
             radius: 18,
             backgroundColor: esquema.primaryContainer,
             child: Text(
-              'GE',
+              iniciais,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,

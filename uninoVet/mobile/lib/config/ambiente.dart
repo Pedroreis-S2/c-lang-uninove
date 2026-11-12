@@ -24,5 +24,8 @@ class Ambiente {
     return 'http://localhost:8080';
   }
 
-  static String get agendamentos => '$apiBase/api/agendamentos';
+  static String get agendamentos => rota('/api/agendamentos');
+
+  // Monta o endereco completo de uma rota da API ("/api/login").
+  static String rota(String caminho) => '$apiBase$caminho';
 }

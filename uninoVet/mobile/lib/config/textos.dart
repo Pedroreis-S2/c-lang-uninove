@@ -48,6 +48,57 @@ class Textos {
   static const String rotuloStatus = 'Situação';
   static const String fechar = 'Fechar';
 
+  // Login e cadastro
+  static const String loginTitulo = 'Entrar';
+  static const String loginSubtitulo = 'Acompanhe e solicite consultas do seu pet';
+  static const String rotuloEmail = 'E-mail';
+  static const String rotuloSenha = 'Senha';
+  static const String rotuloNome = 'Seu nome';
+  static const String rotuloTelefone = 'Telefone';
+  static const String botaoEntrar = 'Entrar';
+  static const String botaoCadastrar = 'Criar conta';
+  static const String irParaCadastro = 'Ainda não tenho conta';
+  static const String irParaLogin = 'Já tenho conta';
+  static const String cadastroTitulo = 'Criar conta de tutor';
+  static const String sair = 'Sair';
+  static const String preenchaTudo = 'Preencha todos os campos.';
+  static const String senhaCurta = 'A senha precisa ter pelo menos 6 caracteres.';
+  static const String semConexao = 'Não consegui falar com a clínica. Tente de novo.';
+
+  // Solicitar consulta
+  static const String solicitarBotao = 'Solicitar';
+  static const String solicitarTitulo = 'Solicitar agendamento';
+  static const String solicitarAviso =
+      'O pedido não reserva o horário: a clínica precisa aceitar. Você acompanha pelo status.';
+  static const String rotuloPet = 'Pet';
+  static const String rotuloServico = 'Serviço';
+  static const String rotuloDia = 'Dia';
+  static const String rotuloHorario = 'Horário';
+  static const String escolhaDia = 'Escolher o dia';
+  static const String semHorarios = 'Sem horários livres neste dia.';
+  static const String enviarPedido = 'Enviar pedido';
+  static const String pedidoEnviado = 'Pedido enviado! Aguarde a resposta da clínica.';
+  static const String cadastreUmPet = 'Cadastre um pet antes de solicitar.';
+
+  // Cancelar e documentos
+  static const String cancelarConsulta = 'Cancelar consulta';
+  static const String confirmarCancelar = 'Cancelar esta consulta?';
+  static const String consultaCancelada = 'Consulta cancelada.';
+  static const String naoCancelar = 'Voltar';
+  static const String avisoCancelamento =
+      'O cancelamento pelo app vale até 30 minutos antes. Depois disso, ligue para a clínica.';
+  static const String documentosTitulo = 'Documentos';
+  static const String rotuloServicoDetalhe = 'Serviço';
+  static const String rotuloRecusa = 'Motivo da recusa';
+
+  // Pets
+  static const String novoPet = 'Novo pet';
+  static const String rotuloNomePet = 'Nome do pet';
+  static const String rotuloEspeciePet = 'Espécie (Cachorro, Gato...)';
+  static const String rotuloRacaPet = 'Raça (opcional)';
+  static const String salvar = 'Salvar';
+  static const String petCadastrado = 'Pet cadastrado!';
+
   static String contagem(int quantidade) {
     if (quantidade == 1) {
       return '1 consulta';

@@ -75,7 +75,10 @@ class Tema {
       case 'CONCLUIDA':
         return const Color(0xFF43A047);
       case 'CANCELADA':
+      case 'RECUSADA':
         return const Color(0xFFE53935);
+      case 'SOLICITADA':
+        return const Color(0xFFFB8C00);
       default:
         return corBase;
     }
@@ -87,6 +90,10 @@ class Tema {
         return 'Concluída';
       case 'CANCELADA':
         return 'Cancelada';
+      case 'RECUSADA':
+        return 'Recusada';
+      case 'SOLICITADA':
+        return 'Solicitada';
       default:
         return 'Agendada';
     }

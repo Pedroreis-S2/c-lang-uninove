@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../config/tema.dart';
 import '../config/textos.dart';
 import '../modelos/agendamento.dart';
+import '../modelos/opcoes.dart';
 import '../widgets/aviso.dart';
 import '../widgets/avatar_pet.dart';
 import '../widgets/titulo_pagina.dart';
@@ -20,10 +21,21 @@ class _Pet {
 class PaginaPets extends StatelessWidget {
   final List<Agendamento> agendamentos;
 
-  const PaginaPets({super.key, required this.agendamentos});
+  // Pets cadastrados pelo tutor (aparecem mesmo sem nenhuma consulta).
+  final List<Pet> petsCadastrados;
+
+  const PaginaPets({
+    super.key,
+    required this.agendamentos,
+    this.petsCadastrados = const <Pet>[],
+  });
 
   List<_Pet> get _pets {
     final porNome = <String, _Pet>{};
+    for (final cadastrado in petsCadastrados) {
+      final chave = '${cadastrado.nome}|${cadastrado.especie}';
+      porNome[chave] = _Pet(nome: cadastrado.nome, especie: cadastrado.especie);
+    }
     for (final agendamento in agendamentos) {
       final chave = '${agendamento.animal}|${agendamento.especie}';
       var pet = porNome[chave];
@@ -81,7 +93,7 @@ class _CartaoPet extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final esquema = Theme.of(context).colorScheme;
-    final ultima = pet.consultas.last;
+    final temConsulta = pet.consultas.isNotEmpty;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(Tema.espaco),
@@ -119,12 +131,13 @@ class _CartaoPet extends StatelessWidget {
               style: texto.labelLarge?.copyWith(color: esquema.primary),
             ),
             const SizedBox(height: 2),
-            Text(
-              '${Textos.ultimaConsulta}: ${ultima.diaFormatado} · ${ultima.motivo}',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: texto.bodySmall?.copyWith(color: esquema.onSurfaceVariant),
-            ),
+            if (temConsulta)
+              Text(
+                '${Textos.ultimaConsulta}: ${pet.consultas.last.diaFormatado} · ${pet.consultas.last.motivo}',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: texto.bodySmall?.copyWith(color: esquema.onSurfaceVariant),
+              ),
           ],
         ),
       ),
