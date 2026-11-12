@@ -7,6 +7,8 @@
 #
 # Sao duas aplicacoes separadas: painel Java em http://localhost:8080 e
 # aplicativo Flutter em http://localhost:5000 (banco em 3306).
+# O app tem hot reload automatico: salvou um arquivo em mobile/lib, o navegador
+# atualiza sozinho (scripts/dev.py observa os arquivos).
 # O Flutter descobre o Java pela variavel API_BASE (o Makefile preenche).
 
 services:
@@ -57,7 +59,8 @@ services:
     environment:
       # Endereco do Java, passado por argumento ao Flutter (--dart-define).
       API_BASE: ${API_BASE:-}
-    command: sh -c "flutter pub get && flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000 --dart-define=API_BASE=$${API_BASE}"
+    command: sh scripts/dev.sh
+    init: true
     ports:
       - "5000:5000"
     depends_on:

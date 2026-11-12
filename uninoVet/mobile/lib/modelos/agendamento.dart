@@ -44,4 +44,32 @@ class Agendamento {
     final horaCurta = hora.length >= 5 ? hora.substring(0, 5) : hora;
     return '${data[2]}/${data[1]}/${data[0]} $horaCurta';
   }
+
+  // Dia da consulta como "2026-10-20", usado para agrupar a agenda.
+  String get dia {
+    final partes = dataHora.split(' ');
+    return partes[0];
+  }
+
+  // Hora da consulta como "09:00".
+  String get hora {
+    final partes = dataHora.split(' ');
+    if (partes.length < 2) {
+      return '';
+    }
+    final horaCompleta = partes[1];
+    if (horaCompleta.length < 5) {
+      return horaCompleta;
+    }
+    return horaCompleta.substring(0, 5);
+  }
+
+  // Mostra "20/10/2026" a partir de "2026-10-20".
+  String get diaFormatado {
+    final data = dia.split('-');
+    if (data.length < 3) {
+      return dia;
+    }
+    return '${data[2]}/${data[1]}/${data[0]}';
+  }
 }

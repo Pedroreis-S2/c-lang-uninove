@@ -41,3 +41,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Hot reload do ambiente de desenvolvimento
+/web/.dev-reload.json*
+__pycache__/
