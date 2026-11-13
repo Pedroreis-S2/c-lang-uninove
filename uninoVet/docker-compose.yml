@@ -9,7 +9,8 @@
 # aplicativo Flutter em http://localhost:5000 (banco em 3306).
 # O app tem hot reload automatico: salvou um arquivo em mobile/lib, o navegador
 # atualiza sozinho (scripts/dev.py observa os arquivos).
-# O Flutter descobre o Java pela variavel API_BASE (o Makefile preenche).
+# Atras do proxy (porta unica) o Flutter fala com o Java por caminho relativo,
+# entao nao precisa de API_BASE no fluxo normal (so fora do proxy).
 
 services:
   db:
@@ -39,8 +40,9 @@ services:
       DB_NAME: uninovet
       DB_USER: uninovet
       DB_PASSWORD: uninovet
-      # Endereco do app Flutter (o painel mostra um link para ele).
-      APP_URL: ${APP_URL:-http://localhost:5000}
+      # Link do painel para o app do cliente. Atras do proxy (porta unica) o app
+      # fica na raiz "/", mesma origem, entao funciona no local e no Codespace.
+      APP_URL: ${APP_URL:-/}
       UPLOADS_DIR: /uploads
       TZ: America/Sao_Paulo
     volumes:
@@ -50,6 +52,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/login"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 40s
 
   mobile:
     build:
@@ -62,14 +70,16 @@ services:
       - ./mobile:/app
       - mobile-pub-cache:/root/.pub-cache
     environment:
-      # Endereco do Java, passado por argumento ao Flutter (--dart-define).
+      # Atras do proxy o app fala com a API por caminho relativo (/api), entao
+      # API_BASE fica vazio. So defina para abrir o app fora do proxy.
       API_BASE: ${API_BASE:-}
     command: sh scripts/dev.sh
     init: true
     ports:
       - "5000:5000"
     depends_on:
-      - web
+      web:
+        condition: service_healthy
 
   # Opcional: junta tudo numa porta so. Subir com: docker compose --profile proxy up
   proxy:
@@ -81,8 +91,10 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - web
-      - mobile
+      web:
+        condition: service_healthy
+      mobile:
+        condition: service_started
 
 volumes:
   mobile-pub-cache:

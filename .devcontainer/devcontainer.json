@@ -23,6 +23,6 @@
       ]
     }
   },
-  "postCreateCommand": "npm install -g @anthropic-ai/claude-code || true",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y make && (npm install -g @anthropic-ai/claude-code || true)",
   "postAttachCommand": "echo 'Rode:  make uninovet   OU   make estudae   (um por vez). Abra as portas na aba PORTS.'"
 }

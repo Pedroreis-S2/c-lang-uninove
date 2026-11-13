@@ -3,6 +3,12 @@
 # instalar nada na maquina.
 FROM tomcat:9.0-jdk17-temurin
 
+# curl: usado pelo healthcheck do compose (o app Flutter e o proxy so sobem
+# depois que o Tomcat responde em /login).
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Troca a aplicacao padrao do Tomcat pela nossa (fica na raiz: /).
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 WORKDIR /usr/local/tomcat/webapps/ROOT
