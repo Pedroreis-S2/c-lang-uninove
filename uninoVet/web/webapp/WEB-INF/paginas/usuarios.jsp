@@ -4,29 +4,36 @@
 <%
   List<Map<String, Object>> usuarios = (List<Map<String, Object>>) request.getAttribute("usuarios");
 %>
-    <h2>Usuários</h2>
+    <div class="topo">
+      <div>
+        <h2>Usuários</h2>
+        <p><%= usuarios.size() %> cadastrados</p>
+      </div>
+    </div>
+    <div class="tabela-wrap">
     <table>
       <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Ativo</th><th>Ações</th></tr></thead>
       <tbody>
 <% for (Map<String, Object> pessoa : usuarios) {
      boolean isAtivo = Integer.valueOf(1).equals(pessoa.get("ativo")); %>
         <tr>
-          <td><%= Html.esc(pessoa.get("nome")) %></td>
+          <td class="pet"><%= Html.esc(pessoa.get("nome")) %></td>
           <td><%= Html.esc(pessoa.get("email")) %></td>
-          <td><%= Html.esc(pessoa.get("perfil")) %></td>
-          <td><%= isAtivo ? "sim" : "não" %></td>
+          <td><span class="etiqueta <%= Html.esc(pessoa.get("perfil")) %>"><%= Icones.rotuloPerfil((String) pessoa.get("perfil")) %></span></td>
+          <td><span class="etiqueta <%= isAtivo ? "sim" : "nao" %>"><%= isAtivo ? "sim" : "não" %></span></td>
           <td>
             <form method="post" action="<%= base %>/acoes" class="linha">
               <input type="hidden" name="csrf" value="<%= csrf %>">
               <input type="hidden" name="voltar" value="/usuarios">
               <input type="hidden" name="id" value="<%= pessoa.get("id") %>">
-              <button type="submit" name="acao" value="alternar_usuario" class="link"><%= isAtivo ? "Desativar" : "Ativar" %></button>
+              <button type="submit" name="acao" value="alternar_usuario" class="<%= isAtivo ? "link" : "ok" %> pequeno"><%= isAtivo ? "Desativar" : "Ativar" %></button>
             </form>
           </td>
         </tr>
 <% } %>
       </tbody>
     </table>
+    </div>
 
     <h3>Novo funcionário</h3>
     <form method="post" action="<%= base %>/acoes" class="formulario largo">
@@ -45,6 +52,6 @@
       </label>
       <label>CRMV (só veterinário) <input name="crmv" maxlength="20"></label>
       <label>Especialidade (só veterinário) <input name="especialidade" maxlength="80"></label>
-      <button type="submit">Criar</button>
+      <button type="submit">Criar funcionário</button>
     </form>
 <%@ include file="rodape.jsp" %>

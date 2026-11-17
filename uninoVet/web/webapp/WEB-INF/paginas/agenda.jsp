@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="java.time.LocalDate" %>
 <% String titulo = "Agenda"; %>
 <%@ include file="topo.jsp" %>
 <%
@@ -10,10 +11,33 @@
   List<Map<String, String>> servicos = (List<Map<String, String>>) request.getAttribute("servicos");
   List<Map<String, String>> animais = (List<Map<String, String>>) request.getAttribute("animais");
   String voltar = "/agenda?dia=" + dia;
+
+  // Atalhos de navegacao entre os dias (mantem o filtro de veterinario).
+  String diaAnterior = null;
+  String diaSeguinte = null;
+  try {
+    LocalDate data = LocalDate.parse(dia);
+    diaAnterior = data.minusDays(1).toString();
+    diaSeguinte = data.plusDays(1).toString();
+  } catch (Exception ignorado) {
+    // dia fora do formato: sem atalhos
+  }
+  String filtroVet = veterinarioFiltro == null ? "" : "&veterinario_id=" + veterinarioFiltro;
 %>
     <div class="topo">
-      <h2>Agenda</h2>
+      <div>
+        <h2>Agenda</h2>
+        <p><%= consultas.size() %> <%= consultas.size() == 1 ? "consulta" : "consultas" %> neste dia</p>
+      </div>
+      <% if (diaAnterior != null) { %>
+      <div class="dias">
+        <a class="botao claro pequeno" href="<%= base %>/agenda?dia=<%= diaAnterior %><%= filtroVet %>">&lsaquo; Anterior</a>
+        <a class="botao claro pequeno" href="<%= base %>/agenda?dia=<%= LocalDate.now() %><%= filtroVet %>">Hoje</a>
+        <a class="botao claro pequeno" href="<%= base %>/agenda?dia=<%= diaSeguinte %><%= filtroVet %>">Próximo &rsaquo;</a>
+      </div>
+      <% } %>
     </div>
+
     <form method="get" action="<%= base %>/agenda" class="filtro">
       <label>Dia <input type="date" name="dia" value="<%= Html.esc(dia) %>"></label>
 <% if (veterinarios != null) { %>
@@ -27,9 +51,10 @@
         </select>
       </label>
 <% } %>
-      <button type="submit">Ver</button>
+      <button type="submit">Filtrar</button>
     </form>
 
+    <div class="tabela-wrap">
     <table>
       <thead><tr><th>Horário</th><th>Pet / Tutor</th><th>Veterinário</th><th>Serviço</th><th>Status</th><th>Ações</th></tr></thead>
       <tbody>
@@ -42,19 +67,20 @@
      Object consultaId = consulta.get("id");
      String fim = consulta.get("fim") == null ? "" : Html.dataHora(consulta.get("fim")).substring(11); %>
         <tr>
-          <td><%= Html.dataHora(consulta.get("data_hora")).substring(11) %><% if (!fim.isEmpty()) { %> &ndash; <%= fim %><% } %></td>
-          <td><%= Html.esc(consulta.get("animal")) %> <small>(<%= Html.esc(consulta.get("tutor")) %>)</small><br><small><%= Html.esc(consulta.get("motivo")) %></small></td>
+          <td class="hora"><%= Html.dataHora(consulta.get("data_hora")).substring(11) %><% if (!fim.isEmpty()) { %> <small>até <%= fim %></small><% } %></td>
+          <td><span class="pet"><%= Html.esc(consulta.get("animal")) %></span> <small>Tutor: <%= Html.esc(consulta.get("tutor")) %></small><small><%= Html.esc(consulta.get("motivo")) %></small></td>
           <td><%= Html.esc(consulta.get("veterinario")) %></td>
           <td><%= Html.esc(consulta.get("tipo_servico")) %></td>
           <td><span class="status <%= Html.esc(status) %>"><%= Html.statusLegivel(status) %></span>
-<% if (consulta.get("motivo_recusa") != null) { %><br><small><%= Html.esc(consulta.get("motivo_recusa")) %></small><% } %></td>
+<% if (consulta.get("motivo_recusa") != null) { %><small><%= Html.esc(consulta.get("motivo_recusa")) %></small><% } %></td>
           <td>
+            <div class="acoes-celula">
 <% if (usuario.isEquipeDeAgenda() && "SOLICITADA".equals(status)) { %>
             <form method="post" action="<%= base %>/acoes" class="linha">
               <input type="hidden" name="csrf" value="<%= csrf %>">
               <input type="hidden" name="voltar" value="<%= Html.esc(voltar) %>">
               <input type="hidden" name="id" value="<%= consultaId %>">
-              <button type="submit" name="acao" value="aceitar">Aceitar</button>
+              <button type="submit" name="acao" value="aceitar" class="ok pequeno">Aceitar</button>
             </form>
 <% } %>
 <% if (usuario.isVeterinario() && "AGENDADA".equals(status)) { %>
@@ -62,7 +88,7 @@
               <input type="hidden" name="csrf" value="<%= csrf %>">
               <input type="hidden" name="voltar" value="<%= Html.esc(voltar) %>">
               <input type="hidden" name="id" value="<%= consultaId %>">
-              <button type="submit" name="acao" value="concluir">Concluir</button>
+              <button type="submit" name="acao" value="concluir" class="ok pequeno">Concluir</button>
             </form>
 <% } %>
 <% if (isAtiva && (usuario.isEquipeDeAgenda() || usuario.isVeterinario())) { %>
@@ -70,32 +96,37 @@
               <input type="hidden" name="csrf" value="<%= csrf %>">
               <input type="hidden" name="voltar" value="<%= Html.esc(voltar) %>">
               <input type="hidden" name="id" value="<%= consultaId %>">
-              <button type="submit" name="acao" value="cancelar" class="link">Cancelar</button>
+              <button type="submit" name="acao" value="cancelar" class="link pequeno">Cancelar</button>
             </form>
 <% } %>
+            </div>
 <% List<Map<String, Object>> anexos = documentos.get(consultaId);
    if (anexos != null) {
      for (Map<String, Object> anexo : anexos) { %>
-            <div><a href="<%= base %>/documentos/baixar?id=<%= anexo.get("id") %>"><%= Html.esc(anexo.get("tipo")) %>: <%= Html.esc(anexo.get("nome_arquivo")) %></a></div>
+            <a class="documento" href="<%= base %>/documentos/baixar?id=<%= anexo.get("id") %>"><%= Icones.svg("arquivo") %><%= Html.esc(anexo.get("tipo")) %>: <%= Html.esc(anexo.get("nome_arquivo")) %></a>
 <%   }
    } %>
 <% if (usuario.isVeterinario() && !"SOLICITADA".equals(status) && !"RECUSADA".equals(status)) { %>
-            <form method="post" action="<%= base %>/documentos/enviar?csrf=<%= csrf %>" enctype="multipart/form-data" class="linha">
-              <input type="hidden" name="voltar" value="<%= Html.esc(voltar) %>">
-              <input type="hidden" name="consulta_id" value="<%= consultaId %>">
-              <select name="tipo"><option value="RECEITA">Receita</option><option value="LAUDO">Laudo</option><option value="OUTRO">Outro</option></select>
-              <input type="file" name="arquivo" accept=".pdf,.jpg,.jpeg,.png" required>
-              <button type="submit">Anexar</button>
-            </form>
+            <details class="anexar">
+              <summary>Anexar documento</summary>
+              <form method="post" action="<%= base %>/documentos/enviar?csrf=<%= csrf %>" enctype="multipart/form-data" class="linha">
+                <input type="hidden" name="voltar" value="<%= Html.esc(voltar) %>">
+                <input type="hidden" name="consulta_id" value="<%= consultaId %>">
+                <select name="tipo"><option value="RECEITA">Receita</option><option value="LAUDO">Laudo</option><option value="OUTRO">Outro</option></select>
+                <input type="file" name="arquivo" accept=".pdf,.jpg,.jpeg,.png" required>
+                <button type="submit" class="pequeno">Anexar</button>
+              </form>
+            </details>
 <% } %>
           </td>
         </tr>
 <% } %>
       </tbody>
     </table>
+    </div>
 
 <% if (usuario.isEquipeDeAgenda()) { %>
-    <h3>Novo agendamento (cliente que ligou)</h3>
+    <h3>Novo agendamento <small>(cliente que ligou)</small></h3>
     <form method="post" action="<%= base %>/acoes" class="formulario largo">
       <input type="hidden" name="csrf" value="<%= csrf %>">
       <input type="hidden" name="acao" value="agendar">
@@ -122,8 +153,8 @@
         </select>
       </label>
       <label>Data e hora <input type="datetime-local" name="data_hora" step="1800" required></label>
-      <label>Motivo <input name="motivo" maxlength="160" required></label>
-      <button type="submit">Agendar</button>
+      <label class="cheio">Motivo <input name="motivo" maxlength="160" required></label>
+      <button type="submit">Agendar consulta</button>
     </form>
 <% } %>
 <%@ include file="rodape.jsp" %>

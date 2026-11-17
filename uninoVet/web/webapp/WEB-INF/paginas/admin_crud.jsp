@@ -8,8 +8,11 @@
   String titulo = tabela.titulo();
 %>
 <%@ include file="topo.jsp" %>
+    <div class="migalhas"><a href="<%= base %>/admin">Admin</a> / <a href="<%= base %>/admin/crud?tabela=<%= Html.esc(tabela.nome()) %>"><%= Html.esc(tabela.titulo()) %></a></div>
 <% if (form) { %>
-    <h2><%= id != null ? "Editar" : "Novo" %> &middot; <%= Html.esc(tabela.titulo()) %></h2>
+    <div class="topo">
+      <h2><%= id != null ? "Editar" : "Novo" %> &middot; <%= Html.esc(tabela.titulo()) %></h2>
+    </div>
     <form method="post" action="<%= base %>/admin/crud" class="formulario">
       <input type="hidden" name="csrf" value="<%= csrf %>">
       <input type="hidden" name="tabela" value="<%= Html.esc(tabela.nome()) %>">
@@ -29,9 +32,13 @@
     </form>
 <% } else { %>
     <div class="topo">
-      <h2><%= Html.esc(tabela.titulo()) %></h2>
-      <a class="botao" href="<%= base %>/admin/crud?tabela=<%= Html.esc(tabela.nome()) %>&acao=form">+ Novo</a>
+      <div>
+        <h2><%= Html.esc(tabela.titulo()) %></h2>
+        <p><%= linhas.size() %> <%= linhas.size() == 1 ? "registro" : "registros" %></p>
+      </div>
+      <a class="botao" href="<%= base %>/admin/crud?tabela=<%= Html.esc(tabela.nome()) %>&acao=form">+ Novo registro</a>
     </div>
+    <div class="tabela-wrap">
     <table>
       <thead>
         <tr>
@@ -48,7 +55,7 @@
 <% for (Map<String, String> linha : linhas) { %>
         <tr>
 <% for (String valor : linha.values()) { %>
-          <td><%= Html.esc(valor) %></td>
+          <td class="celula-curta" title="<%= Html.esc(valor) %>"><%= Html.esc(valor) %></td>
 <% } %>
           <td class="acoes">
             <a href="<%= base %>/admin/crud?tabela=<%= Html.esc(tabela.nome()) %>&acao=form&id=<%= Html.esc(linha.get("id")) %>">Editar</a>
@@ -57,12 +64,13 @@
               <input type="hidden" name="tabela" value="<%= Html.esc(tabela.nome()) %>">
               <input type="hidden" name="acao" value="excluir">
               <input type="hidden" name="id" value="<%= Html.esc(linha.get("id")) %>">
-              <button type="submit" class="link">Excluir</button>
+              <button type="submit" class="link pequeno">Excluir</button>
             </form>
           </td>
         </tr>
 <% } %>
       </tbody>
     </table>
+    </div>
 <% } %>
 <%@ include file="rodape.jsp" %>
